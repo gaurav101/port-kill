@@ -5,9 +5,24 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import Editor from '@monaco-editor/react';
 import { LIBRARY_FILES } from '../data/mockFiles';
-import { FileCode, Copy, Check, Info, FileJson, Layers, Activity } from 'lucide-react';
+import {
+  FileCode,
+  Copy,
+  Check,
+  Info,
+  FileJson,
+  Layers,
+  Activity
+} from 'lucide-react';
 import { CODE_EXPLORER_CONSTANTS } from './constants/codeExplorer.constants';
+
+function normalizeEditorLanguage(language: string): string {
+  if (language === 'typescript') return 'typescript';
+  if (language === 'json') return 'json';
+  return 'plaintext';
+}
 
 export default function CodeExplorer() {
   const [activeFileIdx, setActiveFileIdx] = useState<number>(
@@ -35,7 +50,6 @@ export default function CodeExplorer() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch min-h-[500px]">
-      
       {/* LEFT: File Selector Rail */}
       <div className="lg:col-span-4 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4 flex flex-col justify-between">
         <div className="space-y-4">
@@ -45,7 +59,7 @@ export default function CodeExplorer() {
               {CODE_EXPLORER_CONSTANTS.workspaceTitle}
             </h3>
           </div>
-          
+
           <p className="text-xs text-gray-400 leading-normal">
             {CODE_EXPLORER_CONSTANTS.workspaceDescription}
           </p>
@@ -103,7 +117,7 @@ export default function CodeExplorer() {
               {activeFile.language}
             </span>
           </div>
-          
+
           {/* Copy action */}
           <button
             onClick={handleCopy}
@@ -131,26 +145,37 @@ export default function CodeExplorer() {
         </div>
 
         {/* Code Content Box */}
-        <div className="p-6 bg-slate-950/98 overflow-y-auto font-mono text-xs leading-relaxed flex-1 max-h-[460px]">
-          <pre className="text-slate-300 flex">
-            {/* Column Line Numbers */}
-            <div className="text-slate-600 text-right pr-4 select-none border-r border-slate-900/40 text-[11px] space-y-0 text-mono mr-4 min-w-[24px]">
-              {activeFile.content.split('\n').map((_, i) => (
-                <div key={i} className="h-[18px]">{i + 1}</div>
-              ))}
-            </div>
-            
-            {/* Raw Scrollable Code */}
-            <code className="text-[11px] block overflow-x-auto text-sky-200 w-full whitespace-pre">
-              {activeFile.content.split('\n').map((line, i) => (
-                <div key={i} className="h-[18px] hover:bg-slate-900/30 transition-colors w-full">
-                  {line || CODE_EXPLORER_CONSTANTS.emptyCodeLine}
-                </div>
-              ))}
-            </code>
-          </pre>
+        <div className="bg-slate-950/98 flex-1 min-h-0">
+          <Editor
+            path={activeFile.path}
+            value={activeFile.content || CODE_EXPLORER_CONSTANTS.emptyCodeLine}
+            language={normalizeEditorLanguage(activeFile.language)}
+            theme="vs-dark"
+            loading={null}
+            options={{
+              readOnly: true,
+              minimap: { enabled: false },
+              scrollBeyondLastLine: false,
+              wordWrap: 'off',
+              automaticLayout: true,
+              fontFamily: 'JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+              fontSize: 11,
+              lineHeight: 18,
+              tabSize: 2,
+              renderLineHighlight: 'all',
+              lineNumbersMinChars: 3,
+              padding: { top: 14, bottom: 14 },
+              contextmenu: false,
+              overviewRulerBorder: false,
+              folding: true,
+              glyphMargin: false,
+              guides: {
+                indentation: true
+              }
+            }}
+          />
         </div>
-        
+
         {/* Code File Description footer */}
         <div className="bg-slate-950/90 border-t border-slate-900 px-5 py-3.5 flex gap-2.5 items-start">
           <Info className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
@@ -162,7 +187,6 @@ export default function CodeExplorer() {
           </p>
         </div>
       </div>
-      
     </div>
   );
 }

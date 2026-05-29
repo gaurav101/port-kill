@@ -14,7 +14,7 @@ import CommandBuilder from './components/CommandBuilder';
 import TerminalPlayground from './components/TerminalPlayground';
 import CodeExplorer from './components/CodeExplorer';
 import ReadmeViewer from './components/ReadmeViewer';
-import { APP_FOOTER, APP_TABS, APP_TAB_IDS, TabId } from './constants/app.constants';
+import { APP_EXTERNAL_LINKS, APP_FOOTER, APP_TABS, APP_TAB_IDS, TabId } from './constants/app.constants';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabId>(APP_TAB_IDS.BUILDER);
@@ -29,7 +29,7 @@ export default function App() {
       <main className="max-w-7xl mx-auto px-6 mt-8 w-full flex-1 flex flex-col gap-8">
         
         {/* Tab Navigator Pills */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 bg-slate-200/50 p-1.5 rounded-2xl border border-slate-200/60 backdrop-blur-sm self-start w-full md:w-auto">
+        <div className="flex flex-wrap gap-2 bg-slate-200/50 p-1.5 rounded-2xl border border-slate-200/60 backdrop-blur-sm self-start w-full">
           {APP_TABS.map((tab) => {
             const isSelected = activeTab === tab.id;
             return (
@@ -51,6 +51,18 @@ export default function App() {
               </button>
             );
           })}
+          {APP_EXTERNAL_LINKS.map((link) => (
+            <a
+              key={link.name}
+              href={link.href}
+              target="_blank"
+              rel="noreferrer"
+              className="relative px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-2.5 transition-all cursor-pointer text-slate-500 hover:text-slate-900 hover:bg-white/40"
+            >
+              {link.icon}
+              <span>{link.name}</span>
+            </a>
+          ))}
         </div>
 
         {/* Dynamic Inner Dashboard Page Render */}

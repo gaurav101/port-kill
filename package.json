@@ -10,10 +10,12 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
+    "@gks101/port-kill": "./gks101-port-kill-1.0.1.tgz",
+    "@monaco-editor/react": "^4.7.0",
     "@tailwindcss/vite": "^4.1.14",
     "@vitejs/plugin-react": "^5.0.4",
     "lucide-react": "^0.546.0",
-   "@gks101/port-kill": "./gks101-port-kill-1.0.1.tgz",
+    "monaco-editor": "^0.55.1",
     "motion": "^12.23.24",
     "react": "^19.0.1",
     "react-dom": "^19.0.1",

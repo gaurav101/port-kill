@@ -5,6 +5,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import Editor from '@monaco-editor/react';
 import { Copy, Check, Terminal, Cpu, Lightbulb, Sliders, Code2, AlertCircle } from 'lucide-react';
 import {
   COMMAND_BUILDER_CONTENT,
@@ -113,6 +114,8 @@ export default function CommandBuilder() {
   };
 
   const osDetails = getOsCommandInfo();
+  const cliCommand = generateCliCommand();
+  const programmaticCode = generateProgrammaticCode();
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -322,7 +325,7 @@ export default function CommandBuilder() {
               </span>
             </div>
             <button
-              onClick={() => triggerCopy(generateCliCommand(), COMMAND_BUILDER_VALUES.sectionCli)}
+              onClick={() => triggerCopy(cliCommand, COMMAND_BUILDER_VALUES.sectionCli)}
               className="text-slate-400 hover:text-white transition-colors cursor-pointer"
               title={COMMAND_BUILDER_CONTENT.copyShellTitle}
             >
@@ -348,8 +351,30 @@ export default function CommandBuilder() {
               </AnimatePresence>
             </button>
           </div>
-          <div className="p-5 font-mono text-xs text-blue-300 bg-slate-900 overflow-x-auto whitespace-pre select-all">
-            {generateCliCommand()}
+          <div className="bg-slate-900 h-[74px]">
+            <Editor
+              value={cliCommand}
+              language="shell"
+              theme="vs-dark"
+              loading={null}
+              options={{
+                readOnly: true,
+                minimap: { enabled: false },
+                lineNumbers: 'off',
+                scrollBeyondLastLine: false,
+                wordWrap: 'off',
+                automaticLayout: true,
+                renderLineHighlight: 'none',
+                overviewRulerBorder: false,
+                contextmenu: false,
+                glyphMargin: false,
+                folding: false,
+                fontFamily: 'JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+                fontSize: 12,
+                lineHeight: 20,
+                padding: { top: 14, bottom: 14 }
+              }}
+            />
           </div>
         </div>
 
@@ -362,7 +387,7 @@ export default function CommandBuilder() {
               </span>
             </div>
             <button
-              onClick={() => triggerCopy(generateProgrammaticCode(), COMMAND_BUILDER_VALUES.sectionCode)}
+              onClick={() => triggerCopy(programmaticCode, COMMAND_BUILDER_VALUES.sectionCode)}
               className="text-slate-400 hover:text-white transition-colors cursor-pointer"
               title={COMMAND_BUILDER_CONTENT.copyCodeTitle}
             >
@@ -388,9 +413,34 @@ export default function CommandBuilder() {
               </AnimatePresence>
             </button>
           </div>
-          <pre className="p-5 font-mono text-xs text-sky-100 bg-slate-950/95 overflow-x-auto leading-relaxed overflow-y-auto max-h-[280px]">
-            <code>{generateProgrammaticCode()}</code>
-          </pre>
+          <div className="bg-slate-950/95 h-[280px]">
+            <Editor
+              value={programmaticCode}
+              language="typescript"
+              theme="vs-dark"
+              loading={null}
+              options={{
+                readOnly: true,
+                minimap: { enabled: false },
+                scrollBeyondLastLine: false,
+                wordWrap: 'off',
+                automaticLayout: true,
+                renderLineHighlight: 'line',
+                lineNumbersMinChars: 3,
+                overviewRulerBorder: false,
+                contextmenu: false,
+                glyphMargin: false,
+                folding: true,
+                guides: {
+                  indentation: true
+                },
+                fontFamily: 'JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+                fontSize: 11,
+                lineHeight: 18,
+                padding: { top: 14, bottom: 14 }
+              }}
+            />
+          </div>
         </div>
 
         <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">

@@ -4,7 +4,7 @@
  */
 
 import type { ReactElement } from 'react';
-import { Sliders, Terminal as TermIcon, FileCode, BookOpen } from 'lucide-react';
+import { Sliders, Terminal as TermIcon, FileCode, BookOpen, Github, CircleHelp } from 'lucide-react';
 
 export type TabId = 'builder' | 'terminal' | 'explorer' | 'readme';
 
@@ -20,6 +20,12 @@ export interface AppTabDefinition {
   name: string;
   icon: ReactElement;
   description: string;
+}
+
+export interface AppExternalLink {
+  name: string;
+  href: string;
+  icon: ReactElement;
 }
 
 export const APP_TABS: AppTabDefinition[] = [
@@ -48,6 +54,19 @@ export const APP_TABS: AppTabDefinition[] = [
     description: 'Access the complete API guide, test setup examples, and package metadata.'
   }
 ];
+
+export const APP_EXTERNAL_LINKS: AppExternalLink[] = [
+  {
+    name: 'Repository',
+    href: 'https://github.com/gaurav101/port-kill',
+    icon: <Github className="w-4 h-4" />
+  },
+  {
+    name: 'Ask / Raise Question',
+    href: 'https://github.com/gaurav101/port-kill/issues',
+    icon: <CircleHelp className="w-4 h-4" />
+  }
+] as const;
 
 export const APP_FOOTER = {
   tagline: '@gks101/port-kill - Designed for extreme stability and lightning-fast developer teardowns.',

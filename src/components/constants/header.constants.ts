@@ -25,7 +25,9 @@ export const HEADER_CONTENT = {
   installTitle: 'Core Installation',
   copiedLabel: 'Copied',
   usePrefix: 'Use ',
-  copyInstallTitle: 'Copy install command'
+  copyInstallTitle: 'Copy install command',
+  starButtonLabel: 'Star on GitHub',
+  starUrl: 'https://github.com/gaurav101/port-kill/stargazers'
 } as const;
 
 export const HEADER_BADGES = [

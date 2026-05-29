@@ -26,16 +26,22 @@ export default function TerminalPlayground() {
   const [selectedPlatform, setSelectedPlatform] = useState<TerminalPlatform>(TERMINAL_CONSTANTS.defaultPlatform);
   const [running, setRunning] = useState<boolean>(false);
   const [logs, setLogs] = useState<LogLine[]>([]);
-  const terminalEndRef = useRef<HTMLDivElement>(null);
+  const terminalPanelRef = useRef<HTMLDivElement>(null);
+  const terminalViewportRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (terminalEndRef.current) {
-      terminalEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (terminalViewportRef.current) {
+      terminalViewportRef.current.scrollTo({
+        top: terminalViewportRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
     }
   }, [logs]);
 
   const runSimulation = () => {
     if (running) return;
+
+    terminalPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
     setRunning(true);
     setLogs([]);
@@ -170,48 +176,26 @@ export default function TerminalPlayground() {
     });
   };
 
-  return (
-    <div className="space-y-6">
-      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
-        <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
-          <div className="space-y-1">
-            <h3 className="font-semibold text-slate-900 text-sm tracking-tight flex items-center gap-2 font-sans">
-              <PlayCircle className="w-4 h-4 text-blue-600" />
-              {TERMINAL_CONTENT.simulateExecution}
-            </h3>
-            <p className="text-xs text-slate-500 leading-none font-sans">
-              {TERMINAL_CONTENT.simulateDescription}
-            </p>
-          </div>
+  const activePreset = TERMINAL_PRESETS[selectedPreset];
+  const activeMode = activePreset.dryRun
+    ? TERMINAL_CONTENT.modeDryRun
+    : TERMINAL_CONTENT.modeTerminate;
 
-          <div className="flex gap-4 w-full md:w-auto">
-            <div className="flex bg-slate-100 p-1 rounded-lg">
-              <button
-                onClick={() => setSelectedPlatform(TERMINAL_KEYS.UNIX)}
-                className={`text-xs px-2.5 py-1 rounded transition-colors cursor-pointer ${
-                  selectedPlatform === TERMINAL_KEYS.UNIX
-                    ? 'bg-white font-semibold text-slate-800 shadow-xs border border-slate-200/50'
-                    : 'text-slate-500'
-                }`}
-              >
-                {TERMINAL_CONTENT.unixLabel}
-              </button>
-              <button
-                onClick={() => setSelectedPlatform(TERMINAL_KEYS.WINDOWS)}
-                className={`text-xs px-2.5 py-1 rounded transition-colors cursor-pointer ${
-                  selectedPlatform === TERMINAL_KEYS.WINDOWS
-                    ? 'bg-white font-semibold text-slate-800 shadow-xs border border-slate-200/50'
-                    : 'text-slate-500'
-                }`}
-              >
-                {TERMINAL_CONTENT.windowsLabel}
-              </button>
-            </div>
-          </div>
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
+      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6 md:col-span-5">
+        <div className="space-y-1">
+          <h3 className="font-semibold text-slate-900 text-sm tracking-tight flex items-center gap-2 font-sans">
+            <PlayCircle className="w-4 h-4 text-blue-600" />
+            {TERMINAL_CONTENT.simulateExecution}
+          </h3>
+          <p className="text-xs text-slate-500 leading-none font-sans">
+            {TERMINAL_CONTENT.simulateDescription}
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
-          <div className="md:col-span-8">
+        <div className="space-y-4">
+          <div>
             <label className="text-xs font-semibold text-slate-600 block mb-1.5 font-sans">
               {TERMINAL_CONTENT.selectPresetLabel}
             </label>
@@ -229,7 +213,35 @@ export default function TerminalPlayground() {
             </select>
           </div>
 
-          <div className="md:col-span-4 self-end">
+          <div>
+            <label className="text-xs font-semibold text-slate-600 block mb-1.5 font-sans">
+              {TERMINAL_CONTENT.targetPlatformLabel}
+            </label>
+            <div className="grid grid-cols-2 gap-2 bg-slate-100 p-1 rounded-lg">
+              <button
+                onClick={() => setSelectedPlatform(TERMINAL_KEYS.UNIX)}
+                className={`text-xs px-2.5 py-1.5 rounded transition-colors cursor-pointer ${
+                  selectedPlatform === TERMINAL_KEYS.UNIX
+                    ? 'bg-white font-semibold text-slate-800 shadow-xs border border-slate-200/50'
+                    : 'text-slate-500 hover:text-slate-700'
+                }`}
+              >
+                {TERMINAL_CONTENT.unixLabel}
+              </button>
+              <button
+                onClick={() => setSelectedPlatform(TERMINAL_KEYS.WINDOWS)}
+                className={`text-xs px-2.5 py-1.5 rounded transition-colors cursor-pointer ${
+                  selectedPlatform === TERMINAL_KEYS.WINDOWS
+                    ? 'bg-white font-semibold text-slate-800 shadow-xs border border-slate-200/50'
+                    : 'text-slate-500 hover:text-slate-700'
+                }`}
+              >
+                {TERMINAL_CONTENT.windowsLabel}
+              </button>
+            </div>
+          </div>
+
+          <div>
             <button
               onClick={runSimulation}
               disabled={running}
@@ -248,10 +260,33 @@ export default function TerminalPlayground() {
               )}
             </button>
           </div>
+
+          <div className="rounded-xl border border-slate-200 bg-slate-50 p-3.5 space-y-2">
+            <p className="text-[11px] font-semibold text-slate-700 font-sans">
+              {TERMINAL_CONTENT.configSummaryTitle}
+            </p>
+            <div className="space-y-1.5 text-[11px] text-slate-600 font-mono">
+              <p>
+                <span className="text-slate-500">{TERMINAL_CONTENT.configSummaryCommand}: </span>
+                <span className="text-slate-800">{activePreset.cmd}</span>
+              </p>
+              <p>
+                <span className="text-slate-500">{TERMINAL_CONTENT.configSummaryPids}: </span>
+                <span className="text-slate-800">[{activePreset.pids.join(', ')}]</span>
+              </p>
+              <p>
+                <span className="text-slate-500">{TERMINAL_CONTENT.configSummaryMode}: </span>
+                <span className="text-slate-800">{activeMode}</span>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="bg-gray-950 rounded-2xl overflow-hidden border border-gray-900 shadow-2xl flex flex-col h-[400px]">
+      <div
+        ref={terminalPanelRef}
+        className="bg-gray-950 rounded-2xl overflow-hidden border border-gray-900 shadow-2xl flex flex-col h-[400px] md:col-span-7"
+      >
         <div className="flex items-center justify-between bg-gray-950 px-4 py-3 border-b border-gray-900 select-none">
           <div className="flex items-center gap-2">
             <div className="flex gap-1.5">
@@ -273,7 +308,10 @@ export default function TerminalPlayground() {
           </div>
         </div>
 
-        <div className="p-6 overflow-y-auto flex-1 font-mono text-xs leading-relaxed space-y-2 select-text text-gray-100">
+        <div
+          ref={terminalViewportRef}
+          className="p-6 overflow-y-auto flex-1 font-mono text-xs leading-relaxed space-y-2 select-text text-gray-100"
+        >
           {logs.length === 0 && (
             <div className="text-gray-500 h-full flex flex-col items-center justify-center gap-2 select-none">
               <TermIcon className="w-8 h-8 text-gray-700 animate-pulse" />
@@ -312,7 +350,6 @@ export default function TerminalPlayground() {
               );
             })}
           </AnimatePresence>
-          <div ref={terminalEndRef} />
         </div>
       </div>
     </div>
