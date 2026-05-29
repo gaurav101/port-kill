@@ -1,0 +1,158 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { LIBRARY_FILES, SourceFile } from '../data/mockFiles';
+import { FileCode, Copy, Check, Info, FileJson, Badge, Layers, Activity } from 'lucide-react';
+
+export default function CodeExplorer() {
+  const [activeFileIdx, setActiveFileIdx] = useState<number>(0);
+  const [copied, setCopied] = useState<boolean>(false);
+
+  const activeFile = LIBRARY_FILES[activeFileIdx] || LIBRARY_FILES[0];
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(activeFile.content);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1800);
+  };
+
+  // Helper to choose file extension avatar icons
+  const getFileIcon = (fileName: string) => {
+    if (fileName.endsWith('.json')) {
+      return <FileJson className="w-4 h-4 text-amber-500 shrink-0" />;
+    }
+    return <FileCode className="w-4 h-4 text-blue-500 shrink-0" />;
+  };
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch min-h-[500px]">
+      
+      {/* LEFT: File Selector Rail */}
+      <div className="lg:col-span-4 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4 flex flex-col justify-between">
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 border-b border-slate-100 pb-3.5">
+            <Layers className="w-4 h-4 text-blue-600" />
+            <h3 className="font-semibold text-slate-900 text-sm tracking-tight font-sans">
+              Package Workspace Files
+            </h3>
+          </div>
+          
+          <p className="text-xs text-gray-400 leading-normal">
+            Click on any file to inspect the actual codebase of the port-kill library. Notice the highly modular structure.
+          </p>
+
+          <div className="space-y-1.5 overflow-y-auto max-h-[380px] pr-1">
+            {LIBRARY_FILES.map((file, idx) => {
+              const isActive = activeFileIdx === idx;
+              return (
+                <button
+                  key={file.name}
+                  onClick={() => {
+                    setActiveFileIdx(idx);
+                    setCopied(false);
+                  }}
+                  className={`w-full text-left p-2.5 rounded-xl border transition-all flex items-start gap-3 cursor-pointer ${isActive ? 'bg-blue-50/40 border-blue-200 text-slate-900 font-semibold' : 'bg-slate-50/60 hover:bg-slate-100/60 border-transparent text-slate-600'}`}
+                >
+                  <div className="mt-0.5">
+                    {getFileIcon(file.name)}
+                  </div>
+                  <div className="space-y-0.5 min-w-0 flex-1">
+                    <p className="text-xs font-mono truncate">{file.name}</p>
+                    <p className="text-[10px] text-gray-400 truncate leading-tight">{file.description}</p>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Maintainability Specs Block */}
+        <div className="bg-blue-50/30 rounded-xl p-4 border border-blue-100/50 space-y-2 mt-4 lg:mt-0 font-sans">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-blue-800">
+            <Activity className="w-3.5 h-3.5" />
+            <span>Maintainability Metrics</span>
+          </div>
+          <div className="grid grid-cols-2 gap-2 text-[10px] text-blue-700 font-mono">
+            <div>• Zero Dependencies</div>
+            <div>• ~250 Lines Core Code</div>
+            <div>• Full POSIX Support</div>
+            <div>• Full Windows Support</div>
+          </div>
+        </div>
+      </div>
+
+      {/* RIGHT: High Fidelity Code Editor Viewer */}
+      <div className="lg:col-span-8 bg-slate-950 rounded-2xl border border-slate-900 overflow-hidden shadow-xl flex flex-col">
+        {/* Editor Tab Header */}
+        <div className="flex items-center justify-between bg-slate-950 px-5 py-3 border-b border-slate-900 select-none">
+          <div className="flex items-center gap-2.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block" />
+            <div className="font-mono text-xs text-slate-300">
+              {activeFile.path}
+            </div>
+            <span className="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded font-mono font-medium">
+              {activeFile.language}
+            </span>
+          </div>
+          
+          {/* Copy action */}
+          <button
+            onClick={handleCopy}
+            className="text-slate-400 hover:text-white transition-colors cursor-pointer"
+            title="Copy source content"
+          >
+            <AnimatePresence mode="wait">
+              {copied ? (
+                <motion.span
+                  key="checked"
+                  initial={{ scale: 0.8 }}
+                  animate={{ scale: 1 }}
+                  exit={{ scale: 0.8 }}
+                  className="flex items-center gap-1 text-[11px] font-mono text-blue-400 font-semibold"
+                >
+                  <Check className="w-3.5 h-3.5" /> Copied Code!
+                </motion.span>
+              ) : (
+                <motion.span key="copy" className="flex items-center gap-1 text-[11px] text-slate-400 font-mono hover:text-slate-200">
+                  <Copy className="w-3.5 h-3.5" /> Copy Code
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </button>
+        </div>
+
+        {/* Code Content Box */}
+        <div className="p-6 bg-slate-950/98 overflow-y-auto font-mono text-xs leading-relaxed flex-1 max-h-[460px]">
+          <pre className="text-slate-300 flex">
+            {/* Column Line Numbers */}
+            <div className="text-slate-600 text-right pr-4 select-none border-r border-slate-900/40 text-[11px] space-y-0 text-mono mr-4 min-w-[24px]">
+              {activeFile.content.split('\n').map((_, i) => (
+                <div key={i} className="h-[18px]">{i + 1}</div>
+              ))}
+            </div>
+            
+            {/* Raw Scrollable Code */}
+            <code className="text-[11px] block overflow-x-auto text-sky-200 w-full whitespace-pre">
+              {activeFile.content.split('\n').map((line, i) => (
+                <div key={i} className="h-[18px] hover:bg-slate-900/30 transition-colors w-full">{line || ' '}</div>
+              ))}
+            </code>
+          </pre>
+        </div>
+        
+        {/* Code File Description footer */}
+        <div className="bg-slate-950/90 border-t border-slate-900 px-5 py-3.5 flex gap-2.5 items-start">
+          <Info className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
+          <p className="text-[11px] text-slate-400 leading-normal font-sans">
+            <span className="font-semibold text-slate-300">File purpose:</span> {activeFile.description}
+          </p>
+        </div>
+      </div>
+      
+    </div>
+  );
+}

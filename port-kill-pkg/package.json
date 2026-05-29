@@ -1,0 +1,37 @@
+{
+  "name": "@gks101/port-kill",
+  "version": "1.0.0",
+  "description": "Highly maintainable, lightweight, cross-platform programmatic API and zero-dependency CLI tool to terminate processes running on specific ports.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "port-kill": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: run tests directly via jest/mocha\""
+  },
+  "keywords": [
+    "port-kill",
+    "kill-port",
+    "port-kill-cli",
+    "process-kill",
+    "term-port",
+    "netstat",
+    "lsof",
+    "cross-platform",
+    "ci-cd",
+    "test-cleanup"
+  ],
+  "author": "Gaurav Singh <gaurav.kr.singh1@gmail.com>",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
