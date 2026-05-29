@@ -8,24 +8,24 @@ import { portKillSync } from '../index';
 import { CLI_HELP, CLI_VERSION } from './messages';
 import { parseCliArgs } from './parser';
 import { printResults, printVerboseExecutionDetails } from './reporter';
-import { CLI_PARSE_TYPES } from './constants';
+import { CLI_EXIT_CODES, CLI_PARSE_TYPES } from './constants';
 
 export function runCli(args: string[] = process.argv.slice(2)): void {
   const parsed = parseCliArgs(args);
 
   if (parsed.type === CLI_PARSE_TYPES.HELP) {
     console.log(CLI_HELP);
-    process.exit(0);
+    process.exit(CLI_EXIT_CODES.SUCCESS);
   }
 
   if (parsed.type === CLI_PARSE_TYPES.VERSION) {
     console.log(CLI_VERSION);
-    process.exit(0);
+    process.exit(CLI_EXIT_CODES.SUCCESS);
   }
 
   if (parsed.type === CLI_PARSE_TYPES.ERROR) {
     console.error(parsed.message);
-    process.exit(1);
+    process.exit(CLI_EXIT_CODES.FAILURE);
   }
 
   printVerboseExecutionDetails(parsed.ports, parsed.options);

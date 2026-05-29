@@ -12,11 +12,16 @@ export const HEADER_INSTALL_COMMANDS = {
 
 export const HEADER_COPY_ACTIONS = ['npm', 'npx'] as const;
 
+export const HEADER_DEFAULT_ACTION = {
+  primaryInstallCopyKey: 'npm'
+} as const;
+
 export const HEADER_CONTENT = {
   releaseTag: 'v1.0.0 Release',
   zeroDepsTag: 'Zero Dependencies CLI',
   packageName: '@gks101/port-kill',
-  description: 'Highly maintainable, lightweight cross-platform port termination library and executable package.',
+  description:
+    'Highly maintainable, lightweight cross-platform port termination library and executable package.',
   installTitle: 'Core Installation',
   copiedLabel: 'Copied',
   usePrefix: 'Use ',

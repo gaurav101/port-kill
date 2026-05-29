@@ -6,6 +6,7 @@
 import { spawnSync } from 'child_process';
 import { PortKillLog } from '../shared/logger';
 import { buildCommandFailureMessage } from './diagnostics';
+import { COMMAND_RUNNER_CONSTANTS, COMMAND_RUNNER_MESSAGES } from './constants';
 
 export interface CommandRunResult {
   stdout: string;
@@ -20,12 +21,19 @@ export interface CommandRunResult {
  * Suppresses standard stderr noise unless verbose is enabled.
  */
 export function runCommand(command: string, log: PortKillLog): CommandRunResult {
-  log(`Executing system command: "${command}"`, 'debug');
+  log(
+    COMMAND_RUNNER_MESSAGES.EXECUTING(command),
+    COMMAND_RUNNER_CONSTANTS.DEBUG_LOG_LEVEL
+  );
 
   const result = spawnSync(command, {
     shell: true,
-    encoding: 'utf8',
-    stdio: ['pipe', 'pipe', 'pipe']
+    encoding: COMMAND_RUNNER_CONSTANTS.ENCODING,
+    stdio: [
+      COMMAND_RUNNER_CONSTANTS.STDIO_PIPE,
+      COMMAND_RUNNER_CONSTANTS.STDIO_PIPE,
+      COMMAND_RUNNER_CONSTANTS.STDIO_PIPE
+    ]
   });
 
   const stdout = result.stdout || '';
@@ -42,6 +50,9 @@ export function runCommand(command: string, log: PortKillLog): CommandRunResult 
     error: result.error?.message
   });
 
-  log(`Command failed or returned non-zero code. ${error}`, 'debug');
+  log(
+    COMMAND_RUNNER_MESSAGES.COMMAND_FAILURE(error),
+    COMMAND_RUNNER_CONSTANTS.DEBUG_LOG_LEVEL
+  );
   return { stdout, success: false, error, stderr, status: result.status };
 }

@@ -5,7 +5,13 @@
 
 import { useState } from 'react';
 import { Copy, Check, Terminal, Sparkles } from 'lucide-react';
-import { HEADER_BADGES, HEADER_CONTENT, HEADER_COPY_ACTIONS, HEADER_INSTALL_COMMANDS } from './header.constants';
+import {
+  HEADER_BADGES,
+  HEADER_CONTENT,
+  HEADER_COPY_ACTIONS,
+  HEADER_DEFAULT_ACTION,
+  HEADER_INSTALL_COMMANDS
+} from './constants/header.constants';
 
 export default function Header() {
   const [copiedCmd, setCopiedCmd] = useState<string | null>(null);
@@ -73,11 +79,16 @@ export default function Header() {
           <div className="flex items-center justify-between gap-4 bg-slate-900/5 rounded p-2.5 font-mono text-[12px] text-slate-800">
             <span className="truncate">{HEADER_INSTALL_COMMANDS.npm}</span>
             <button
-              onClick={() => copyToClipboard(HEADER_INSTALL_COMMANDS.npm, 'npm')}
+              onClick={() =>
+                copyToClipboard(
+                  HEADER_INSTALL_COMMANDS[HEADER_DEFAULT_ACTION.primaryInstallCopyKey],
+                  HEADER_DEFAULT_ACTION.primaryInstallCopyKey
+                )
+              }
               className="text-slate-400 hover:text-slate-700 p-1 rounded hover:bg-slate-200/50 transition-colors"
               title={HEADER_CONTENT.copyInstallTitle}
             >
-              {copiedCmd === 'npm' ? (
+              {copiedCmd === HEADER_DEFAULT_ACTION.primaryInstallCopyKey ? (
                 <Check className="w-4 h-4 text-blue-600" />
               ) : (
                 <Copy className="w-4 h-4" />

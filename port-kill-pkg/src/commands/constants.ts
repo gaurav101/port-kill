@@ -26,3 +26,14 @@ export const COMMAND_ARGUMENTS = {
   NO_FLAG: '',
   POSIX_SIGNAL_PREFIX: 'SIG'
 } as const;
+
+export const COMMAND_RUNNER_CONSTANTS = {
+  ENCODING: 'utf8',
+  STDIO_PIPE: 'pipe',
+  DEBUG_LOG_LEVEL: 'debug'
+} as const;
+
+export const COMMAND_RUNNER_MESSAGES = {
+  EXECUTING: (command: string) => `Executing system command: "${command}"`,
+  COMMAND_FAILURE: (error: string) => `Command failed or returned non-zero code. ${error}`
+} as const;

@@ -14,10 +14,10 @@ import CommandBuilder from './components/CommandBuilder';
 import TerminalPlayground from './components/TerminalPlayground';
 import CodeExplorer from './components/CodeExplorer';
 import ReadmeViewer from './components/ReadmeViewer';
-import { APP_FOOTER, APP_TABS, TabId } from './constants/app.constants';
+import { APP_FOOTER, APP_TABS, APP_TAB_IDS, TabId } from './constants/app.constants';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<TabId>('builder');
+  const [activeTab, setActiveTab] = useState<TabId>(APP_TAB_IDS.BUILDER);
 
   return (
     <div className="min-h-screen bg-slate-50 pb-20 flex flex-col font-sans select-none selection:bg-blue-50 selection:text-blue-950">
@@ -64,10 +64,10 @@ export default function App() {
               transition={{ duration: 0.2, ease: 'easeInOut' }}
               className="outline-none"
             >
-              {activeTab === 'builder' && <CommandBuilder />}
-              {activeTab === 'terminal' && <TerminalPlayground />}
-              {activeTab === 'explorer' && <CodeExplorer />}
-              {activeTab === 'readme' && <ReadmeViewer />}
+              {activeTab === APP_TAB_IDS.BUILDER && <CommandBuilder />}
+              {activeTab === APP_TAB_IDS.TERMINAL && <TerminalPlayground />}
+              {activeTab === APP_TAB_IDS.EXPLORER && <CodeExplorer />}
+              {activeTab === APP_TAB_IDS.README && <ReadmeViewer />}
             </motion.div>
           </AnimatePresence>
         </div>

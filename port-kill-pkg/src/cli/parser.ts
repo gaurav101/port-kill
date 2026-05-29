@@ -5,7 +5,7 @@
 
 import { PortKillOptions } from '../types';
 import { CLI_ERRORS } from './messages';
-import { CLI_FLAGS, CLI_PARSE_TYPES } from './constants';
+import { CLI_DEFAULT_OPTIONS, CLI_FLAGS, CLI_PARSE_TYPES } from './constants';
 
 export type CliParseResult =
   | { type: typeof CLI_PARSE_TYPES.HELP }
@@ -25,9 +25,9 @@ export function parseCliArgs(args: string[]): CliParseResult {
   const ports: number[] = [];
   const options: PortKillOptions = {
     port: [],
-    force: true,
-    verbose: false,
-    dryRun: false
+    force: CLI_DEFAULT_OPTIONS.force,
+    verbose: CLI_DEFAULT_OPTIONS.verbose,
+    dryRun: CLI_DEFAULT_OPTIONS.dryRun
   };
 
   for (let i = 0; i < args.length; i++) {

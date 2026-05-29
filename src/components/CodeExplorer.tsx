@@ -7,22 +7,27 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { LIBRARY_FILES } from '../data/mockFiles';
 import { FileCode, Copy, Check, Info, FileJson, Layers, Activity } from 'lucide-react';
+import { CODE_EXPLORER_CONSTANTS } from './constants/codeExplorer.constants';
 
 export default function CodeExplorer() {
-  const [activeFileIdx, setActiveFileIdx] = useState<number>(0);
+  const [activeFileIdx, setActiveFileIdx] = useState<number>(
+    CODE_EXPLORER_CONSTANTS.defaultActiveFileIndex
+  );
   const [copied, setCopied] = useState<boolean>(false);
 
-  const activeFile = LIBRARY_FILES[activeFileIdx] || LIBRARY_FILES[0];
+  const activeFile =
+    LIBRARY_FILES[activeFileIdx] ||
+    LIBRARY_FILES[CODE_EXPLORER_CONSTANTS.defaultActiveFileIndex];
 
   const handleCopy = () => {
     navigator.clipboard.writeText(activeFile.content);
     setCopied(true);
-    setTimeout(() => setCopied(false), 1800);
+    setTimeout(() => setCopied(false), CODE_EXPLORER_CONSTANTS.copyTimeoutMs);
   };
 
   // Helper to choose file extension avatar icons
   const getFileIcon = (fileName: string) => {
-    if (fileName.endsWith('.json')) {
+    if (fileName.endsWith(CODE_EXPLORER_CONSTANTS.jsonExtension)) {
       return <FileJson className="w-4 h-4 text-amber-500 shrink-0" />;
     }
     return <FileCode className="w-4 h-4 text-blue-500 shrink-0" />;
@@ -37,12 +42,12 @@ export default function CodeExplorer() {
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3.5">
             <Layers className="w-4 h-4 text-blue-600" />
             <h3 className="font-semibold text-slate-900 text-sm tracking-tight font-sans">
-              Package Workspace Files
+              {CODE_EXPLORER_CONSTANTS.workspaceTitle}
             </h3>
           </div>
           
           <p className="text-xs text-gray-400 leading-normal">
-            Click on any file to inspect the actual codebase of the port-kill library. The package now uses Strategy and Factory Method patterns for platform behavior.
+            {CODE_EXPLORER_CONSTANTS.workspaceDescription}
           </p>
 
           <div className="space-y-1.5 overflow-y-auto max-h-[380px] pr-1">
@@ -74,13 +79,13 @@ export default function CodeExplorer() {
         <div className="bg-blue-50/30 rounded-xl p-4 border border-blue-100/50 space-y-2 mt-4 lg:mt-0 font-sans">
           <div className="flex items-center gap-1.5 text-xs font-semibold text-blue-800">
             <Activity className="w-3.5 h-3.5" />
-            <span>Maintainability Metrics</span>
+            <span>{CODE_EXPLORER_CONSTANTS.metricsTitle}</span>
           </div>
           <div className="grid grid-cols-2 gap-2 text-[10px] text-blue-700 font-mono">
-            <div>• Zero Dependencies</div>
-            <div>• ~250 Lines Core Code</div>
-            <div>• Full POSIX Support</div>
-            <div>• Full Windows Support</div>
+            <div>{CODE_EXPLORER_CONSTANTS.metricZeroDeps}</div>
+            <div>{CODE_EXPLORER_CONSTANTS.metricCoreLines}</div>
+            <div>{CODE_EXPLORER_CONSTANTS.metricPosix}</div>
+            <div>{CODE_EXPLORER_CONSTANTS.metricWindows}</div>
           </div>
         </div>
       </div>
@@ -103,7 +108,7 @@ export default function CodeExplorer() {
           <button
             onClick={handleCopy}
             className="text-slate-400 hover:text-white transition-colors cursor-pointer"
-            title="Copy source content"
+            title={CODE_EXPLORER_CONSTANTS.copyButtonTitle}
           >
             <AnimatePresence mode="wait">
               {copied ? (
@@ -114,11 +119,11 @@ export default function CodeExplorer() {
                   exit={{ scale: 0.8 }}
                   className="flex items-center gap-1 text-[11px] font-mono text-blue-400 font-semibold"
                 >
-                  <Check className="w-3.5 h-3.5" /> Copied Code!
+                  <Check className="w-3.5 h-3.5" /> {CODE_EXPLORER_CONSTANTS.copiedLabel}
                 </motion.span>
               ) : (
                 <motion.span key="copy" className="flex items-center gap-1 text-[11px] text-slate-400 font-mono hover:text-slate-200">
-                  <Copy className="w-3.5 h-3.5" /> Copy Code
+                  <Copy className="w-3.5 h-3.5" /> {CODE_EXPLORER_CONSTANTS.copyLabel}
                 </motion.span>
               )}
             </AnimatePresence>
@@ -138,7 +143,9 @@ export default function CodeExplorer() {
             {/* Raw Scrollable Code */}
             <code className="text-[11px] block overflow-x-auto text-sky-200 w-full whitespace-pre">
               {activeFile.content.split('\n').map((line, i) => (
-                <div key={i} className="h-[18px] hover:bg-slate-900/30 transition-colors w-full">{line || ' '}</div>
+                <div key={i} className="h-[18px] hover:bg-slate-900/30 transition-colors w-full">
+                  {line || CODE_EXPLORER_CONSTANTS.emptyCodeLine}
+                </div>
               ))}
             </code>
           </pre>
@@ -148,7 +155,10 @@ export default function CodeExplorer() {
         <div className="bg-slate-950/90 border-t border-slate-900 px-5 py-3.5 flex gap-2.5 items-start">
           <Info className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
           <p className="text-[11px] text-slate-400 leading-normal font-sans">
-            <span className="font-semibold text-slate-300">File purpose:</span> {activeFile.description}
+            <span className="font-semibold text-slate-300">
+              {CODE_EXPLORER_CONSTANTS.filePurposePrefix}
+            </span>{' '}
+            {activeFile.description}
           </p>
         </div>
       </div>

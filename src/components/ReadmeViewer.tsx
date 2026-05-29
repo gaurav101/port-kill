@@ -4,10 +4,27 @@
  */
 
 import { useState } from 'react';
-import { 
-  Terminal, ShieldCheck, HeartHandshake, GitPullRequest, 
-  BookOpen, Key, Check, Copy, Flame
+import {
+  Terminal,
+  ShieldCheck,
+  HeartHandshake,
+  GitPullRequest,
+  BookOpen,
+  Key,
+  Check,
+  Copy,
+  Flame
 } from 'lucide-react';
+import {
+  README_VIEWER_API_ROWS,
+  README_VIEWER_ARCHITECTURE_SNIPPET,
+  README_VIEWER_BADGES,
+  README_VIEWER_CLI_EXAMPLES,
+  README_VIEWER_CONSTANTS,
+  README_VIEWER_FEATURES,
+  README_VIEWER_INSTALL_SNIPPETS,
+  README_VIEWER_TEST_SNIPPET
+} from './constants/readmeViewer.constants';
 
 export default function ReadmeViewer() {
   const [copied, setCopied] = useState<string | null>(null);
@@ -15,260 +32,167 @@ export default function ReadmeViewer() {
   const copySnippet = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
     setCopied(id);
-    setTimeout(() => setCopied(null), 1800);
+    setTimeout(() => setCopied(null), README_VIEWER_CONSTANTS.copiedTimeoutMs);
   };
 
   return (
     <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm space-y-8 max-w-4xl mx-auto">
-      
-      {/* Title & Badges Header */}
       <div className="border-b border-slate-100 pb-6 space-y-4">
         <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 font-sans">
-          @gks101/port-kill
+          {README_VIEWER_CONSTANTS.packageName}
         </h2>
-        
-        {/* Modern Live Action Badges */}
+
         <div className="flex flex-wrap gap-2 pt-1 font-mono text-[11px] font-semibold text-white">
-          <span className="inline-flex rounded overflow-hidden">
-            <span className="bg-gray-800 px-2.5 py-1">npm</span>
-            <span className="bg-blue-500 px-2.5 py-1">v1.0.0</span>
-          </span>
-          <span className="inline-flex rounded overflow-hidden">
-            <span className="bg-gray-800 px-2.5 py-1">build</span>
-            <span className="bg-blue-500 px-2.5 py-1">passing</span>
-          </span>
-          <span className="inline-flex rounded overflow-hidden">
-            <span className="bg-gray-800 px-2.5 py-1">coverage</span>
-            <span className="bg-blue-650 bg-blue-600 px-2.5 py-1">100%</span>
-          </span>
-          <span className="inline-flex rounded overflow-hidden">
-            <span className="bg-gray-800 px-2.5 py-1">license</span>
-            <span className="bg-sky-500 px-2.5 py-1">Apache-2.0</span>
-          </span>
-          <span className="inline-flex rounded overflow-hidden">
-            <span className="bg-gray-800 px-2.5 py-1">PRs</span>
-            <span className="bg-amber-500 px-2.5 py-1">welcome</span>
-          </span>
+          {README_VIEWER_BADGES.map((badge) => (
+            <span key={badge.label} className="inline-flex rounded overflow-hidden">
+              <span className={`${badge.labelClass} px-2.5 py-1`}>{badge.label}</span>
+              <span className={`${badge.valueClass} px-2.5 py-1`}>{badge.value}</span>
+            </span>
+          ))}
         </div>
 
         <p className="text-sm text-gray-600 leading-relaxed font-sans max-w-2xl">
-          A highly maintainable, lightweight, cross-platform programmatic API and zero-dependency CLI tool to terminate processes running on specific ports. Designed specifically for Node.js developers seeking seamless integration into test suites (like Jest/Mocha), DevOps CI pipelines, and daily workflows.
+          {README_VIEWER_CONSTANTS.description}
         </p>
       </div>
 
-      {/* Section 1: Key Advantages */}
       <div className="space-y-4 font-sans">
         <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
           <BookOpen className="w-5 h-5 text-blue-600" />
-          🚀 Key Advantages
+          {README_VIEWER_CONSTANTS.keyAdvantagesTitle}
         </h3>
         <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-600">
-          <li className="bg-slate-50 rounded-xl p-4 border border-slate-200 flex items-start gap-2.5">
-            <span className="text-blue-500 mt-0.5 font-bold">✓</span>
-            <div>
-              <span className="font-semibold text-slate-800 block">Zero Outside Dependencies</span>
-              Instant downloads and lightweight execution inside continuous integration pipelines.
-            </div>
-          </li>
-          <li className="bg-slate-50 rounded-xl p-4 border border-slate-200 flex items-start gap-2.5">
-            <span className="text-blue-500 mt-0.5 font-bold">✓</span>
-            <div>
-              <span className="font-semibold text-slate-800 block">Deep Cross-Platform Support</span>
-              Equalized operation commands for macOS/POSIX systems and Windows command runtimes.
-            </div>
-          </li>
-          <li className="bg-slate-50 rounded-xl p-4 border border-slate-200 flex items-start gap-2.5">
-            <span className="text-blue-500 mt-0.5 font-bold">✓</span>
-            <div>
-              <span className="font-semibold text-slate-800 block">Multi-Lookup Fallbacks</span>
-              Queries active sockets via lsof, fuser (Debian fallbacks), and regex netstat matches.
-            </div>
-          </li>
-          <li className="bg-slate-50 rounded-xl p-4 border border-slate-200 flex items-start gap-2.5">
-            <span className="text-blue-500 mt-0.5 font-bold">✓</span>
-            <div>
-              <span className="font-semibold text-slate-800 block">Complete Process Trees</span>
-              Terminates target parent processes and associated children trees to avoid detached zombie sockets.
-            </div>
-          </li>
+          {README_VIEWER_FEATURES.map((item) => (
+            <li
+              key={item.title}
+              className="bg-slate-50 rounded-xl p-4 border border-slate-200 flex items-start gap-2.5"
+            >
+              <span className="text-blue-500 mt-0.5 font-bold">
+                {README_VIEWER_CONSTANTS.featureCheck}
+              </span>
+              <div>
+                <span className="font-semibold text-slate-800 block">{item.title}</span>
+                {item.description}
+              </div>
+            </li>
+          ))}
         </ul>
       </div>
 
-      {/* Section 2: Installation */}
       <div className="space-y-3 pt-2 font-sans">
         <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
           <Terminal className="w-5 h-5 text-blue-600" />
-          💻 Installation
+          {README_VIEWER_CONSTANTS.installationTitle}
         </h3>
-        
-        {/* Install snippets */}
-        <div className="space-y-3.5">
-          <div className="space-y-1">
-            <p className="text-xs text-slate-500">To utilize globally on any system command shell:</p>
-            <div className="flex bg-slate-50 rounded-lg p-2.5 border border-slate-200 items-center justify-between font-mono text-xs text-slate-800">
-              <code>npm install -g @gks101/port-kill</code>
-              <button onClick={() => copySnippet('npm install -g @gks101/port-kill', 'global')} className="text-slate-400 hover:text-slate-700 cursor-pointer">
-                {copied === 'global' ? <Check className="w-4 h-4 text-blue-600" /> : <Copy className="w-4 h-4" />}
-              </button>
-            </div>
-          </div>
 
-          <div className="space-y-1">
-            <p className="text-xs text-slate-500">To save as development dependency inside codebases:</p>
-            <div className="flex bg-slate-50 rounded-lg p-2.5 border border-slate-200 items-center justify-between font-mono text-xs text-slate-800">
-              <code>npm install --save-dev @gks101/port-kill</code>
-              <button onClick={() => copySnippet('npm install --save-dev @gks101/port-kill', 'local')} className="text-slate-400 hover:text-slate-700 cursor-pointer">
-                {copied === 'local' ? <Check className="w-4 h-4 text-blue-600" /> : <Copy className="w-4 h-4" />}
-              </button>
+        <div className="space-y-3.5">
+          {README_VIEWER_INSTALL_SNIPPETS.map((snippet) => (
+            <div key={snippet.id} className="space-y-1">
+              <p className="text-xs text-slate-500">{snippet.hint}</p>
+              <div className="flex bg-slate-50 rounded-lg p-2.5 border border-slate-200 items-center justify-between font-mono text-xs text-slate-800">
+                <code>{snippet.command}</code>
+                <button
+                  onClick={() => copySnippet(snippet.command, snippet.id)}
+                  className="text-slate-400 hover:text-slate-700 cursor-pointer"
+                >
+                  {copied === snippet.id ? (
+                    <Check className="w-4 h-4 text-blue-600" />
+                  ) : (
+                    <Copy className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
             </div>
-          </div>
+          ))}
         </div>
       </div>
 
-      {/* Section 3: Commands */}
       <div className="space-y-4 pt-2 font-sans">
         <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
           <Flame className="w-5 h-5 text-blue-600" />
-          🛠 Direct CLI Actions
+          {README_VIEWER_CONSTANTS.directCliTitle}
         </h3>
-        
-        <p className="text-xs text-slate-500">Run via npx or directly as global script parameters:</p>
-        
+
+        <p className="text-xs text-slate-500">{README_VIEWER_CONSTANTS.cliHint}</p>
+
         <div className="bg-slate-950 rounded-xl p-4 border border-slate-900 font-mono text-xs text-sky-200 space-y-3.5">
-          <div>
-            <span className="text-gray-500 block"># Terminate processes on port 3000 mapping immediately</span>
-            <span>$ port-kill 3000</span>
-          </div>
-          <div>
-            <span className="text-gray-500 block"># Release multiple targets concurrently</span>
-            <span>$ port-kill 3000 8080 8081</span>
-          </div>
-          <div>
-            <span className="text-gray-500 block"># Access execution tracing and debug info</span>
-            <span>$ port-kill 3000 --verbose</span>
-          </div>
-          <div>
-            <span className="text-gray-500 block"># Probe and identify bounds safely without terminate events</span>
-            <span>$ port-kill 5000 --dry-run</span>
-          </div>
+          {README_VIEWER_CLI_EXAMPLES.map((item) => (
+            <div key={item.command}>
+              <span className="text-gray-500 block">{item.description}</span>
+              <span>{item.command}</span>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Section 4: Testing Framework teardown */}
       <div className="space-y-4 pt-2 font-sans">
         <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
           <ShieldCheck className="w-5 h-5 text-blue-600" />
-          🎭 Automated Testharness Integrations (Mocha/Jest)
+          {README_VIEWER_CONSTANTS.testingTitle}
         </h3>
         <p className="text-xs text-slate-500">
-          Clean sockets preceding network binds inside Jest environments prevent annoying <code>EADDRINUSE</code> failures during intense local file watchers:
+          {README_VIEWER_CONSTANTS.testHint}
         </p>
 
         <div className="bg-slate-950 rounded-xl p-4 border border-slate-900 font-mono text-[11px] text-slate-300 leading-relaxed overflow-x-auto whitespace-pre">
-{`import { portKillSync } from '@gks101/port-kill';
-import express from 'express';
-
-describe('API Route Assertion Suites', () => {
-  const TEST_PORT = 4900;
-  let activeServer: any;
-
-  beforeAll(() => {
-    // Force synchronize release before server mount
-    portKillSync(TEST_PORT, { verbose: false, force: true });
-    
-    activeServer = express().listen(TEST_PORT);
-  });
-
-  afterAll((done) => {
-    activeServer.close(() => {
-      // Clear socket on exit
-      portKillSync(TEST_PORT);
-      done();
-    });
-  });
-});`}
+          {README_VIEWER_TEST_SNIPPET}
         </div>
       </div>
 
-      {/* Section 5: API Grid configuration */}
       <div className="space-y-4 pt-2 font-sans">
         <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
           <Key className="w-5 h-5 text-blue-600" />
-          ⚙ API Options Reference
+          {README_VIEWER_CONSTANTS.apiOptionsTitle}
         </h3>
-        
+
         <div className="border border-slate-200 rounded-xl overflow-hidden text-xs shadow-xs">
           <table className="min-w-full divide-y divide-slate-150">
             <thead className="bg-slate-50 font-semibold text-slate-700 text-left">
               <tr>
-                <th className="px-4 py-2.5">Option</th>
-                <th className="px-4 py-2.5">Type</th>
-                <th className="px-4 py-2.5">Default</th>
-                <th className="px-4 py-2.5">Description</th>
+                <th className="px-4 py-2.5">{README_VIEWER_CONSTANTS.tableHeaderOption}</th>
+                <th className="px-4 py-2.5">{README_VIEWER_CONSTANTS.tableHeaderType}</th>
+                <th className="px-4 py-2.5">{README_VIEWER_CONSTANTS.tableHeaderDefault}</th>
+                <th className="px-4 py-2.5">{README_VIEWER_CONSTANTS.tableHeaderDescription}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-slate-600 bg-white font-mono">
-              <tr>
-                <td className="px-4 py-2.5 font-bold text-slate-900">port</td>
-                <td className="px-4 py-2.5 text-blue-600">number | number[]</td>
-                <td className="px-3.5 py-2.5 text-slate-400">Required</td>
-                <td className="px-4 py-2.5 font-sans leading-relaxed text-slate-600 font-medium">The specific port (or array of ports) to run lookup filters and terminate.</td>
-              </tr>
-              <tr>
-                <td className="px-4 py-2.5 font-bold text-slate-900">force</td>
-                <td className="px-4 py-2.5 text-blue-600">boolean</td>
-                <td className="px-3.5 py-2.5 text-slate-500">true</td>
-                <td className="px-4 py-2.5 font-sans leading-relaxed text-slate-600 font-medium">When true, utilizes SIGKILL on POSIX/Mac machines, and /F taskkills on Windows windows.</td>
-              </tr>
-              <tr>
-                <td className="px-4 py-2.5 font-bold text-slate-900">signal</td>
-                <td className="px-4 py-2.5 text-blue-600">string</td>
-                <td className="px-3.5 py-2.5 text-slate-500">'SIGKILL'</td>
-                <td className="px-4 py-2.5 font-sans leading-relaxed text-slate-600 font-medium">Sends standard Unix signals. Override with SIGTERM or SIGINT if needed (ignored on Windows).</td>
-              </tr>
-              <tr>
-                <td className="px-4 py-2.5 font-bold text-slate-900">verbose</td>
-                <td className="px-4 py-2.5 text-blue-600">boolean</td>
-                <td className="px-3.5 py-2.5 text-slate-500">false</td>
-                <td className="px-4 py-2.5 font-sans leading-relaxed text-slate-600 font-medium">Prints real-time system executions, socket maps, and shell outcome codes.</td>
-              </tr>
+              {README_VIEWER_API_ROWS.map((row) => (
+                <tr key={row.option}>
+                  <td className="px-4 py-2.5 font-bold text-slate-900">{row.option}</td>
+                  <td className="px-4 py-2.5 text-blue-600">{row.type}</td>
+                  <td className="px-3.5 py-2.5 text-slate-500">{row.defaultValue}</td>
+                  <td className="px-4 py-2.5 font-sans leading-relaxed text-slate-600 font-medium">
+                    {row.description}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
       </div>
 
-      {/* Section 6: Architecture */}
       <div className="space-y-4 pt-2 font-sans">
         <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
           <GitPullRequest className="w-5 h-5 text-blue-600" />
-          📂 Structure & Architecture
+          {README_VIEWER_CONSTANTS.architectureTitle}
         </h3>
         <p className="text-xs text-slate-500 leading-relaxed">
-          Platform behavior is isolated behind strategies. Command creation lives in command factories, and a runtime factory selects the correct strategy from <code>process.platform</code>.
+          {README_VIEWER_CONSTANTS.architectureHint}
         </p>
         <div className="bg-slate-950 rounded-xl p-4 border border-slate-900 font-mono text-[11px] text-slate-300 leading-relaxed overflow-x-auto whitespace-pre">
-{`port-kill-pkg/
-├── src/
-│   ├── index.ts              # portKill / portKillSync
-│   ├── types.ts              # Public TypeScript interfaces
-│   ├── cli/                  # CLI entry, parser, messages, reporter
-│   ├── commands/             # Command constants, diagnostics, factories, runner
-│   ├── platform/             # Strategy factory, strategies, result service
-│   └── shared/               # Shared logger adapter`}
+          {README_VIEWER_ARCHITECTURE_SNIPPET}
         </div>
       </div>
 
-      {/* Section 7: Contributions */}
       <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 flex items-start gap-3 font-sans">
         <HeartHandshake className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
         <div className="space-y-1.5 text-xs">
-          <h4 className="font-bold text-slate-900">🤝 Peer Collaboration Guide</h4>
+          <h4 className="font-bold text-slate-900">{README_VIEWER_CONSTANTS.contributionTitle}</h4>
           <p className="text-slate-600 leading-relaxed">
-            We values peer contributions! To join up: Fork the package codebase, write targeted modifications into `/src`, guarantee all linter tests compile perfectly, and submit clean PRs with high visibility summaries.
+            {README_VIEWER_CONSTANTS.contributionBody}
           </p>
         </div>
       </div>
-
     </div>
   );
 }

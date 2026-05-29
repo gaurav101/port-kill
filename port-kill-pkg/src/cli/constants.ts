@@ -23,6 +23,17 @@ export const CLI_PARSE_TYPES = {
   RUN: 'run'
 } as const;
 
+export const CLI_EXIT_CODES = {
+  SUCCESS: 0,
+  FAILURE: 1
+} as const;
+
+export const CLI_DEFAULT_OPTIONS = {
+  force: true,
+  verbose: false,
+  dryRun: false
+} as const;
+
 export const CLI_RESULT_MESSAGES = {
   TARGETING_PORTS: (ports: number[]) => `[port-kill] Targeting ports: [${ports.join(', ')}]`,
   OPTIONS_CONFIGURED: '[port-kill] Options configured:',

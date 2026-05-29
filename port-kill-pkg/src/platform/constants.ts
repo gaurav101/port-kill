@@ -4,6 +4,7 @@
  */
 
 export const PLATFORM_RUNTIME = {
+  WINDOWS_PLATFORM_KEY: 'win32',
   WINDOWS_NAME: 'windows',
   UNIX_NAME: 'unix',
   FORCE_SIGNAL: 'SIGKILL',

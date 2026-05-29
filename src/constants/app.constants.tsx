@@ -8,6 +8,13 @@ import { Sliders, Terminal as TermIcon, FileCode, BookOpen } from 'lucide-react'
 
 export type TabId = 'builder' | 'terminal' | 'explorer' | 'readme';
 
+export const APP_TAB_IDS = {
+  BUILDER: 'builder' as TabId,
+  TERMINAL: 'terminal' as TabId,
+  EXPLORER: 'explorer' as TabId,
+  README: 'readme' as TabId
+} as const;
+
 export interface AppTabDefinition {
   id: TabId;
   name: string;
@@ -17,25 +24,25 @@ export interface AppTabDefinition {
 
 export const APP_TABS: AppTabDefinition[] = [
   {
-    id: 'builder',
+    id: APP_TAB_IDS.BUILDER,
     name: 'Interactive Code Builder',
     icon: <Sliders className="w-4 h-4" />,
     description: 'Design custom programmatic snippets or CLI sequences instantly with multiple options.'
   },
   {
-    id: 'terminal',
+    id: APP_TAB_IDS.TERMINAL,
     name: 'Sandbox Terminal Runtime',
     icon: <TermIcon className="w-4 h-4" />,
     description: 'Trace step-by-step diagnostic loops and verify POSIX / Windows process kills.'
   },
   {
-    id: 'explorer',
+    id: APP_TAB_IDS.EXPLORER,
     name: 'Package Code Explorer',
     icon: <FileCode className="w-4 h-4" />,
     description: 'Review the actual NPM package TypeScript source code structured for high maintainability.'
   },
   {
-    id: 'readme',
+    id: APP_TAB_IDS.README,
     name: 'Official Package README',
     icon: <BookOpen className="w-4 h-4" />,
     description: 'Access the complete API guides, test suite teardoun setups, and live badge metrics.'
