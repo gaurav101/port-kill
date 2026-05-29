@@ -8,19 +8,19 @@ export interface PortKillOptions {
    * The port (or array of ports) to terminate processes on.
    */
   port?: number | number[];
-  
+
   /**
    * Force termination. Maps to SIGKILL on Unix systems, and `/F` on Windows.
    * @default true
    */
   force?: boolean;
-  
+
   /**
    * The termination signal to send (Unix systems only).
    * @default 'SIGKILL' (or 'SIGTERM' depending on `force` flag)
    */
   signal?: 'SIGKILL' | 'SIGTERM' | 'SIGINT' | string;
-  
+
   /**
    * Enable verbose console logging.
    * @default false
@@ -45,27 +45,27 @@ export interface PortKillResult {
    * The port targeted for termination.
    */
   port: number;
-  
+
   /**
    * Whether the operation was completed successfully (or no processes were listening).
    */
   success: boolean;
-  
+
   /**
    * List of process IDs (PIDs) identified on this port.
    */
   pids: number[];
-  
+
   /**
    * Descriptive text outcome of the operation.
    */
   message: string;
-  
+
   /**
    * Error message if the operation failed.
    */
   error?: string;
-  
+
   /**
    * Timestamp when the port kill was executed.
    */

@@ -33,8 +33,8 @@ export class UnixPortStrategy implements PlatformStrategy {
     if (success && stdout.trim()) {
       const pids = stdout
         .split('\n')
-        .map(line => parseInt(line.trim(), 10))
-        .filter(pid => !isNaN(pid));
+        .map((line) => parseInt(line.trim(), 10))
+        .filter((pid) => !isNaN(pid));
 
       log(PLATFORM_MESSAGES.LSOF_PIDS(port, pids), 'debug');
       return pids;
@@ -46,8 +46,8 @@ export class UnixPortStrategy implements PlatformStrategy {
     if (fuserResult.stdout.trim()) {
       const pids = fuserResult.stdout
         .split(/\s+/)
-        .map(part => parseInt(part.trim(), 10))
-        .filter(pid => !isNaN(pid));
+        .map((part) => parseInt(part.trim(), 10))
+        .filter((pid) => !isNaN(pid));
 
       if (pids.length > 0) {
         log(PLATFORM_MESSAGES.FUSER_PIDS(port, pids), 'debug');
@@ -61,7 +61,8 @@ export class UnixPortStrategy implements PlatformStrategy {
 
   terminatePids(pids: number[], options: PortKillOptions, log: PortKillLog): TerminationResult {
     const force = options.force !== false;
-    const signal = options.signal || (force ? PLATFORM_RUNTIME.FORCE_SIGNAL : PLATFORM_RUNTIME.GRACEFUL_SIGNAL);
+    const signal =
+      options.signal || (force ? PLATFORM_RUNTIME.FORCE_SIGNAL : PLATFORM_RUNTIME.GRACEFUL_SIGNAL);
 
     log(PLATFORM_MESSAGES.PREPARE_UNIX_SIGNAL(signal, pids), 'info');
 
@@ -141,7 +142,7 @@ export class WindowsPortStrategy implements PlatformStrategy {
     const allSucceeded = successCount === pids.length;
     return {
       success: allSucceeded,
-      error: allSucceeded ? undefined : errors.join('; ')
+      error: allSucceeded ? undefined : errors.join('; '),
     };
   }
 }

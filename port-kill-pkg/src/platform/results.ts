@@ -19,7 +19,7 @@ export function createFreePortResult(port: number, timestamp: string): PortKillR
     success: true,
     pids: [],
     message: PLATFORM_RESULT_MESSAGES.FREE_PORT(port),
-    timestamp
+    timestamp,
   };
 }
 
@@ -31,7 +31,7 @@ export function createDryRunResult(context: PortResultContext): PortKillResult {
     success: true,
     pids,
     message: PLATFORM_RESULT_MESSAGES.DRY_RUN(port, pids),
-    timestamp
+    timestamp,
   };
 }
 
@@ -62,7 +62,7 @@ function createWindowsTerminationResult(
       ? PLATFORM_RESULT_MESSAGES.WINDOWS_SUCCESS(port)
       : PLATFORM_RESULT_MESSAGES.WINDOWS_FAILURE,
     error: result.error,
-    timestamp
+    timestamp,
   };
 }
 
@@ -81,6 +81,6 @@ function createUnixTerminationResult(
       ? PLATFORM_RESULT_MESSAGES.UNIX_SUCCESS(port, signal)
       : PLATFORM_RESULT_MESSAGES.UNIX_FAILURE(port, signal),
     error: result.error,
-    timestamp
+    timestamp,
   };
 }

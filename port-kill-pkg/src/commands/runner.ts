@@ -21,10 +21,7 @@ export interface CommandRunResult {
  * Suppresses standard stderr noise unless verbose is enabled.
  */
 export function runCommand(command: string, log: PortKillLog): CommandRunResult {
-  log(
-    COMMAND_RUNNER_MESSAGES.EXECUTING(command),
-    COMMAND_RUNNER_CONSTANTS.DEBUG_LOG_LEVEL
-  );
+  log(COMMAND_RUNNER_MESSAGES.EXECUTING(command), COMMAND_RUNNER_CONSTANTS.DEBUG_LOG_LEVEL);
 
   const result = spawnSync(command, {
     shell: true,
@@ -32,8 +29,8 @@ export function runCommand(command: string, log: PortKillLog): CommandRunResult 
     stdio: [
       COMMAND_RUNNER_CONSTANTS.STDIO_PIPE,
       COMMAND_RUNNER_CONSTANTS.STDIO_PIPE,
-      COMMAND_RUNNER_CONSTANTS.STDIO_PIPE
-    ]
+      COMMAND_RUNNER_CONSTANTS.STDIO_PIPE,
+    ],
   });
 
   const stdout = result.stdout || '';
@@ -47,12 +44,9 @@ export function runCommand(command: string, log: PortKillLog): CommandRunResult 
     command,
     status: result.status,
     stderr,
-    error: result.error?.message
+    error: result.error?.message,
   });
 
-  log(
-    COMMAND_RUNNER_MESSAGES.COMMAND_FAILURE(error),
-    COMMAND_RUNNER_CONSTANTS.DEBUG_LOG_LEVEL
-  );
+  log(COMMAND_RUNNER_MESSAGES.COMMAND_FAILURE(error), COMMAND_RUNNER_CONSTANTS.DEBUG_LOG_LEVEL);
   return { stdout, success: false, error, stderr, status: result.status };
 }

@@ -10,7 +10,7 @@ import {
   HEADER_CONTENT,
   HEADER_COPY_ACTIONS,
   HEADER_DEFAULT_ACTION,
-  HEADER_INSTALL_COMMANDS
+  HEADER_INSTALL_COMMANDS,
 } from './constants/header.constants';
 
 export default function Header() {
@@ -25,7 +25,6 @@ export default function Header() {
   return (
     <header className="border-b border-slate-200 bg-white sticky top-0 z-40 px-6 py-5 shadow-sm">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-        
         {/* Left Side: Logo and Title */}
         <div className="space-y-2">
           <div className="flex items-center gap-2.5">
@@ -37,20 +36,25 @@ export default function Header() {
               <span>{HEADER_CONTENT.zeroDepsTag}</span>
             </div>
           </div>
-          
+
           <h1 className="text-2xl font-bold tracking-tight text-slate-800 font-sans flex items-center gap-2">
             {HEADER_CONTENT.packageName}
           </h1>
           <p className="text-sm text-slate-500 max-w-xl leading-relaxed">
             {HEADER_CONTENT.description}
           </p>
-          
+
           {/* Status Badges Row */}
           <div className="flex flex-wrap gap-2 pt-2">
             {HEADER_BADGES.map((badge) => (
-              <span key={badge.label} className="inline-flex overflow-hidden rounded text-[11px] font-medium border border-slate-200 shadow-xs">
+              <span
+                key={badge.label}
+                className="inline-flex overflow-hidden rounded text-[11px] font-medium border border-slate-200 shadow-xs"
+              >
                 <span className="bg-slate-800 text-slate-100 px-2 py-0.5">{badge.label}</span>
-                <span className={`${badge.valueClass} text-white px-2 py-0.5 font-bold`}>{badge.value}</span>
+                <span className={`${badge.valueClass} text-white px-2 py-0.5 font-bold`}>
+                  {badge.value}
+                </span>
               </span>
             ))}
           </div>
@@ -84,7 +88,9 @@ export default function Header() {
                     onClick={() => copyToClipboard(HEADER_INSTALL_COMMANDS[type], type)}
                     className="text-[11px] font-semibold text-slate-600 bg-white hover:bg-slate-100 px-2 py-0.5 rounded border border-slate-250 transition-colors cursor-pointer"
                   >
-                    {copiedCmd === type ? HEADER_CONTENT.copiedLabel : `${HEADER_CONTENT.usePrefix}${type}`}
+                    {copiedCmd === type
+                      ? HEADER_CONTENT.copiedLabel
+                      : `${HEADER_CONTENT.usePrefix}${type}`}
                   </button>
                 ))}
               </div>
@@ -111,7 +117,6 @@ export default function Header() {
             </div>
           </div>
         </div>
-        
       </div>
     </header>
   );

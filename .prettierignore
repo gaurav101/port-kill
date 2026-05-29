@@ -1,0 +1,4 @@
+dist
+node_modules
+port-kill-pkg/dist
+*.tgz

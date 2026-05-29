@@ -14,7 +14,7 @@ export class UnixCommandFactory implements PlatformCommandFactory {
   createFindCommands(port: number): string[] {
     return [
       `${COMMAND_BINARIES.LSOF} ${COMMAND_FLAGS.LSOF_TERSE} ${COMMAND_FLAGS.LSOF_NUMERIC} ${COMMAND_FLAGS.LSOF_INET} :${port}`,
-      `${COMMAND_BINARIES.FUSER} ${port}/${COMMAND_ARGUMENTS.TCP_PROTOCOL}`
+      `${COMMAND_BINARIES.FUSER} ${port}/${COMMAND_ARGUMENTS.TCP_PROTOCOL}`,
     ];
   }
 
@@ -41,12 +41,16 @@ export class WindowsCommandFactory implements PlatformCommandFactory {
 
   createKillCommand(pids: number[], signalOrForce: string | boolean): string[] {
     const forceFlag = signalOrForce ? COMMAND_FLAGS.TASKKILL_FORCE : COMMAND_ARGUMENTS.NO_FLAG;
-    return pids.map(pid => [
-      COMMAND_BINARIES.TASKKILL,
-      forceFlag,
-      COMMAND_FLAGS.TASKKILL_TREE,
-      COMMAND_FLAGS.TASKKILL_PID,
-      String(pid)
-    ].filter(Boolean).join(' '));
+    return pids.map((pid) =>
+      [
+        COMMAND_BINARIES.TASKKILL,
+        forceFlag,
+        COMMAND_FLAGS.TASKKILL_TREE,
+        COMMAND_FLAGS.TASKKILL_PID,
+        String(pid),
+      ]
+        .filter(Boolean)
+        .join(' ')
+    );
   }
 }

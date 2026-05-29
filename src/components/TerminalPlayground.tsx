@@ -13,7 +13,7 @@ import {
   TERMINAL_LOG_MESSAGES,
   TERMINAL_PRESETS,
   TerminalLogType,
-  TerminalPlatform
+  TerminalPlatform,
 } from './constants/terminalPlayground.constants';
 
 interface LogLine {
@@ -23,7 +23,9 @@ interface LogLine {
 
 export default function TerminalPlayground() {
   const [selectedPreset, setSelectedPreset] = useState<string>(TERMINAL_CONSTANTS.defaultPreset);
-  const [selectedPlatform, setSelectedPlatform] = useState<TerminalPlatform>(TERMINAL_CONSTANTS.defaultPlatform);
+  const [selectedPlatform, setSelectedPlatform] = useState<TerminalPlatform>(
+    TERMINAL_CONSTANTS.defaultPlatform
+  );
   const [running, setRunning] = useState<boolean>(false);
   const [logs, setLogs] = useState<LogLine[]>([]);
   const terminalPanelRef = useRef<HTMLDivElement>(null);
@@ -33,7 +35,7 @@ export default function TerminalPlayground() {
     if (terminalViewportRef.current) {
       terminalViewportRef.current.scrollTo({
         top: terminalViewportRef.current.scrollHeight,
-        behavior: 'smooth'
+        behavior: 'smooth',
       });
     }
   }, [logs]);
@@ -54,13 +56,13 @@ export default function TerminalPlayground() {
       {
         text: `${TERMINAL_CONTENT.commandPrefix}${preset.cmd}`,
         type: TERMINAL_KEYS.LOG_CMD,
-        delay: TERMINAL_CONSTANTS.copyRuntimeDelayStartMs
+        delay: TERMINAL_CONSTANTS.copyRuntimeDelayStartMs,
       },
       {
         text: TERMINAL_LOG_MESSAGES.initiating,
         type: TERMINAL_KEYS.LOG_INFO,
-        delay: TERMINAL_CONSTANTS.infoDelayStartMs
-      }
+        delay: TERMINAL_CONSTANTS.infoDelayStartMs,
+      },
     ];
 
     if (preset.verbose) {
@@ -71,14 +73,14 @@ export default function TerminalPlayground() {
               force: preset.force,
               verbose: true,
               dryRun: preset.dryRun,
-              signal: isWindows ? undefined : preset.signal
+              signal: isWindows ? undefined : preset.signal,
             },
             null,
             2
           )
         ),
         type: TERMINAL_KEYS.LOG_DEBUG,
-        delay: TERMINAL_CONSTANTS.debugDelayOptionsMs
+        delay: TERMINAL_CONSTANTS.debugDelayOptionsMs,
       });
     }
 
@@ -86,38 +88,38 @@ export default function TerminalPlayground() {
       sequence.push({
         text: TERMINAL_LOG_MESSAGES.windowsLookup,
         type: TERMINAL_KEYS.LOG_DEBUG,
-        delay: TERMINAL_CONSTANTS.debugDelayLookupMs
+        delay: TERMINAL_CONSTANTS.debugDelayLookupMs,
       });
       sequence.push({
         text: TERMINAL_LOG_MESSAGES.windowsLookupResult,
         type: TERMINAL_KEYS.LOG_DEBUG,
-        delay: TERMINAL_CONSTANTS.debugDelayLookupResultMs
+        delay: TERMINAL_CONSTANTS.debugDelayLookupResultMs,
       });
     } else {
       const matchedPort = preset.cmd.match(/\d+/)?.[0] ?? TERMINAL_CONSTANTS.fallbackLookupPort;
       sequence.push({
         text: TERMINAL_LOG_MESSAGES.unixLookup(matchedPort),
         type: TERMINAL_KEYS.LOG_DEBUG,
-        delay: TERMINAL_CONSTANTS.debugDelayLookupMs
+        delay: TERMINAL_CONSTANTS.debugDelayLookupMs,
       });
     }
 
     sequence.push({
       text: TERMINAL_LOG_MESSAGES.discoveredPids(activePids),
       type: TERMINAL_KEYS.LOG_INFO,
-      delay: TERMINAL_CONSTANTS.discoveredPidDelayMs
+      delay: TERMINAL_CONSTANTS.discoveredPidDelayMs,
     });
 
     if (preset.dryRun) {
       sequence.push({
         text: TERMINAL_LOG_MESSAGES.dryRunChecked(activePids),
         type: TERMINAL_KEYS.LOG_SUCCESS,
-        delay: TERMINAL_CONSTANTS.dryRunCheckedDelayMs
+        delay: TERMINAL_CONSTANTS.dryRunCheckedDelayMs,
       });
       sequence.push({
         text: TERMINAL_LOG_MESSAGES.dryRunComplete(activePids),
         type: TERMINAL_KEYS.LOG_SUCCESS,
-        delay: TERMINAL_CONSTANTS.dryRunCompleteDelayMs
+        delay: TERMINAL_CONSTANTS.dryRunCompleteDelayMs,
       });
     } else if (isWindows) {
       activePids.forEach((pid, index) => {
@@ -125,17 +127,17 @@ export default function TerminalPlayground() {
         sequence.push({
           text: TERMINAL_LOG_MESSAGES.prepareWindows(pid, preset.force),
           type: TERMINAL_KEYS.LOG_INFO,
-          delay: TERMINAL_CONSTANTS.killStartDelayMs + stepOffset
+          delay: TERMINAL_CONSTANTS.killStartDelayMs + stepOffset,
         });
         sequence.push({
           text: TERMINAL_LOG_MESSAGES.runWindowsKill(pid, preset.force),
           type: TERMINAL_KEYS.LOG_DEBUG,
-          delay: TERMINAL_CONSTANTS.killDebugDelayMs + stepOffset
+          delay: TERMINAL_CONSTANTS.killDebugDelayMs + stepOffset,
         });
         sequence.push({
           text: TERMINAL_LOG_MESSAGES.windowsTerminated(pid),
           type: TERMINAL_KEYS.LOG_INFO,
-          delay: TERMINAL_CONSTANTS.killSuccessDelayMs + stepOffset
+          delay: TERMINAL_CONSTANTS.killSuccessDelayMs + stepOffset,
         });
       });
     } else {
@@ -146,24 +148,24 @@ export default function TerminalPlayground() {
       sequence.push({
         text: TERMINAL_LOG_MESSAGES.prepareUnix(selectedSignal, activePids),
         type: TERMINAL_KEYS.LOG_INFO,
-        delay: TERMINAL_CONSTANTS.killStartDelayMs
+        delay: TERMINAL_CONSTANTS.killStartDelayMs,
       });
       sequence.push({
         text: TERMINAL_LOG_MESSAGES.runUnixKill(shellSignal, activePids),
         type: TERMINAL_KEYS.LOG_DEBUG,
-        delay: TERMINAL_CONSTANTS.killDebugDelayMs
+        delay: TERMINAL_CONSTANTS.killDebugDelayMs,
       });
       sequence.push({
         text: TERMINAL_LOG_MESSAGES.unixTerminated(activePids),
         type: TERMINAL_KEYS.LOG_INFO,
-        delay: TERMINAL_CONSTANTS.killSuccessDelayMs
+        delay: TERMINAL_CONSTANTS.killSuccessDelayMs,
       });
     }
 
     sequence.push({
       text: TERMINAL_LOG_MESSAGES.finalSuccess,
       type: TERMINAL_KEYS.LOG_SUCCESS,
-      delay: TERMINAL_CONSTANTS.finalSuccessDelayMs
+      delay: TERMINAL_CONSTANTS.finalSuccessDelayMs,
     });
 
     sequence.forEach((line) => {

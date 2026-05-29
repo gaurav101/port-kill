@@ -10,7 +10,10 @@ export function printVerboseExecutionDetails(ports: number[], options: PortKillO
   if (!options.verbose) return;
 
   console.log(CLI_RESULT_MESSAGES.TARGETING_PORTS(ports));
-  console.log(CLI_RESULT_MESSAGES.OPTIONS_CONFIGURED, JSON.stringify({ ...options, port: undefined }, null, 2));
+  console.log(
+    CLI_RESULT_MESSAGES.OPTIONS_CONFIGURED,
+    JSON.stringify({ ...options, port: undefined }, null, 2)
+  );
 }
 
 export function printResults(results: PortKillResult[]): number {

@@ -23,7 +23,7 @@ export function buildCommandFailureMessage(context: CommandFailureContext): stri
     `Command failed: ${context.command}.${statusText}`,
     `Reason: ${rawReason}`,
     `Likely issue: ${diagnosis.issue}`,
-    `Possible fix: ${diagnosis.fix}`
+    `Possible fix: ${diagnosis.fix}`,
   ].join(' ');
 }
 
@@ -37,37 +37,37 @@ function diagnoseFailure(reason: string): { issue: string; fix: string } {
   if (hasAnyKeyword(lowerReason, COMMAND_DIAGNOSTIC_KEYWORDS.PERMISSION)) {
     return {
       issue: COMMAND_DIAGNOSTIC_MESSAGES.ISSUE_PERMISSION,
-      fix: COMMAND_DIAGNOSTIC_MESSAGES.FIX_PERMISSION
+      fix: COMMAND_DIAGNOSTIC_MESSAGES.FIX_PERMISSION,
     };
   }
 
   if (hasAnyKeyword(lowerReason, COMMAND_DIAGNOSTIC_KEYWORDS.NO_PROCESS)) {
     return {
       issue: COMMAND_DIAGNOSTIC_MESSAGES.ISSUE_NO_PROCESS,
-      fix: COMMAND_DIAGNOSTIC_MESSAGES.FIX_NO_PROCESS
+      fix: COMMAND_DIAGNOSTIC_MESSAGES.FIX_NO_PROCESS,
     };
   }
 
   if (hasAnyKeyword(lowerReason, COMMAND_DIAGNOSTIC_KEYWORDS.INVALID_SIGNAL)) {
     return {
       issue: COMMAND_DIAGNOSTIC_MESSAGES.ISSUE_INVALID_SIGNAL,
-      fix: COMMAND_DIAGNOSTIC_MESSAGES.FIX_INVALID_SIGNAL
+      fix: COMMAND_DIAGNOSTIC_MESSAGES.FIX_INVALID_SIGNAL,
     };
   }
 
   if (hasAnyKeyword(lowerReason, COMMAND_DIAGNOSTIC_KEYWORDS.MISSING_COMMAND)) {
     return {
       issue: COMMAND_DIAGNOSTIC_MESSAGES.ISSUE_MISSING_COMMAND,
-      fix: COMMAND_DIAGNOSTIC_MESSAGES.FIX_MISSING_COMMAND
+      fix: COMMAND_DIAGNOSTIC_MESSAGES.FIX_MISSING_COMMAND,
     };
   }
 
   return {
     issue: COMMAND_DIAGNOSTIC_MESSAGES.ISSUE_FALLBACK,
-    fix: COMMAND_DIAGNOSTIC_MESSAGES.FIX_FALLBACK
+    fix: COMMAND_DIAGNOSTIC_MESSAGES.FIX_FALLBACK,
   };
 }
 
 function hasAnyKeyword(input: string, keywords: readonly string[]): boolean {
-  return keywords.some(keyword => input.includes(keyword));
+  return keywords.some((keyword) => input.includes(keyword));
 }

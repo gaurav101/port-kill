@@ -11,7 +11,7 @@ export * from './types';
 /**
  * Programmatic interface to terminate processes listening on a list of ports (Synchronous).
  * Ideal for CLI wrappers or quick scripts where asynchronous flow increases complexity.
- * 
+ *
  * @param ports List of ports (one or more) to release
  * @param options Configurations for termination signal, verbosity, or dry-run checks
  */
@@ -33,7 +33,7 @@ export function portKillSync(
         pids: [],
         message: `An unexpected application error occurred while targeting port ${port}: ${err?.message || String(err)}`,
         error: err?.message || String(err),
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
   }
@@ -45,7 +45,7 @@ export function portKillSync(
  * Programmatic interface to terminate processes listening on a list of ports (Asynchronous).
  * Fully non-blocking, returns a Promise with lists of outcomes. Perfect for server lifecycles,
  * DevTools integration, or testing orchestrators.
- * 
+ *
  * @param ports List of ports (one or more) to release
  * @param options Configurations for termination signal, verbosity, or dry-run checks
  */

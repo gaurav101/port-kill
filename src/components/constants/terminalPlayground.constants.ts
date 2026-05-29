@@ -34,7 +34,7 @@ export const TERMINAL_CONSTANTS = {
   killDebugDelayMs: 3300,
   killSuccessDelayMs: 3600,
   killWindowsDelayStepMs: 400,
-  finalSuccessDelayMs: 4100
+  finalSuccessDelayMs: 4100,
 } as const;
 
 export const TERMINAL_KEYS = {
@@ -46,7 +46,7 @@ export const TERMINAL_KEYS = {
   LOG_ERROR: 'error' as TerminalLogType,
   LOG_DEBUG: 'debug' as TerminalLogType,
   LOG_SUCCESS: 'success' as TerminalLogType,
-  SIG_PREFIX: 'SIG'
+  SIG_PREFIX: 'SIG',
 } as const;
 
 export const TERMINAL_PRESETS: Record<string, TerminalPreset> = {
@@ -57,7 +57,7 @@ export const TERMINAL_PRESETS: Record<string, TerminalPreset> = {
     verbose: false,
     dryRun: false,
     force: true,
-    signal: 'SIGKILL'
+    signal: 'SIGKILL',
   },
   verboseMultiple: {
     name: 'Verbose Multi-Target (Ports 8080 or 8081)',
@@ -66,7 +66,7 @@ export const TERMINAL_PRESETS: Record<string, TerminalPreset> = {
     verbose: true,
     dryRun: false,
     force: true,
-    signal: 'SIGKILL'
+    signal: 'SIGKILL',
   },
   dryAudit: {
     name: 'Safe Dry-Run Audit (Port 5000)',
@@ -75,7 +75,7 @@ export const TERMINAL_PRESETS: Record<string, TerminalPreset> = {
     verbose: true,
     dryRun: true,
     force: true,
-    signal: 'SIGKILL'
+    signal: 'SIGKILL',
   },
   graceful: {
     name: 'Graceful Termination (Port 8000)',
@@ -84,8 +84,8 @@ export const TERMINAL_PRESETS: Record<string, TerminalPreset> = {
     verbose: false,
     dryRun: false,
     force: false,
-    signal: 'SIGTERM'
-  }
+    signal: 'SIGTERM',
+  },
 };
 
 export const TERMINAL_CONTENT = {
@@ -111,7 +111,7 @@ export const TERMINAL_CONTENT = {
   emptyReadyTitle: 'Ready to roll command diagnostics',
   emptyReadyDescription: 'Select a preset above and click "Run Simulation" to trace PIDs',
   commandPrefix: '$ ',
-  successPrefix: '✓'
+  successPrefix: '✓',
 } as const;
 
 export const TERMINAL_LOG_MESSAGES = {
@@ -141,5 +141,5 @@ export const TERMINAL_LOG_MESSAGES = {
   unixTerminated: (pids: number[]) =>
     `[port-kill] [INFO] Processes [${pids.join(', ')}] terminated via native signal successfully.`,
   finalSuccess:
-    '✓ [Port Clearance Success] All sockets on targeted port(s) have been successfully released.'
+    '✓ [Port Clearance Success] All sockets on targeted port(s) have been successfully released.',
 } as const;

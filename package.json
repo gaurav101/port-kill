@@ -7,7 +7,12 @@
     "dev": "vite --port=3000 --host=0.0.0.0",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "tsc --noEmit"
+    "lint": "eslint src vite.config.ts --max-warnings 0",
+    "lint:fix": "eslint src vite.config.ts --fix",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "prepare": "husky"
   },
   "dependencies": {
     "@gks101/port-kill": "./gks101-port-kill-1.0.1.tgz",
@@ -22,14 +27,23 @@
     "vite": "^6.2.3"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/node": "^22.14.0",
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
     "autoprefixer": "^10.4.21",
     "esbuild": "^0.25.0",
+    "eslint": "^10.4.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.6.0",
+    "husky": "^9.1.7",
+    "prettier": "^3.8.3",
     "tailwindcss": "^4.1.14",
     "tsx": "^4.21.0",
     "typescript": "~5.8.2",
+    "typescript-eslint": "^8.60.0",
     "vite": "^6.2.3"
   }
 }

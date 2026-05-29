@@ -13,32 +13,34 @@ export const CLI_FLAGS = {
   DRY_RUN: '--dry-run',
   NO_FORCE: '--no-force',
   SIGNAL: '--signal',
-  SIGNAL_SHORT: '-s'
+  SIGNAL_SHORT: '-s',
 } as const;
 
 export const CLI_PARSE_TYPES = {
   HELP: 'help',
   VERSION: 'version',
   ERROR: 'error',
-  RUN: 'run'
+  RUN: 'run',
 } as const;
 
 export const CLI_EXIT_CODES = {
   SUCCESS: 0,
-  FAILURE: 1
+  FAILURE: 1,
 } as const;
 
 export const CLI_DEFAULT_OPTIONS = {
   force: true,
   verbose: false,
-  dryRun: false
+  dryRun: false,
 } as const;
 
 export const CLI_RESULT_MESSAGES = {
   TARGETING_PORTS: (ports: number[]) => `[port-kill] Targeting ports: [${ports.join(', ')}]`,
   OPTIONS_CONFIGURED: '[port-kill] Options configured:',
-  SUCCESS_KILLED: (port: number, pids: number[]) => `✓ [Port ${port}] Process tree killed: [${pids.join(', ')}].`,
-  SUCCESS_ALREADY_FREE: (port: number) => `✓ [Port ${port}] Already free (no active processes found).`,
+  SUCCESS_KILLED: (port: number, pids: number[]) =>
+    `✓ [Port ${port}] Process tree killed: [${pids.join(', ')}].`,
+  SUCCESS_ALREADY_FREE: (port: number) =>
+    `✓ [Port ${port}] Already free (no active processes found).`,
   FAILURE_GENERIC: (port: number) => `✗ [Port ${port}] Terminate action failed.`,
-  FAILURE_DETAIL: (error: string) => `  ↳ Error detail: ${error}`
+  FAILURE_DETAIL: (error: string) => `  ↳ Error detail: ${error}`,
 } as const;

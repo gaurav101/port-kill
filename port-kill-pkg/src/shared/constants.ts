@@ -8,5 +8,5 @@ export const LOGGER_CONSTANTS = {
   DEBUG_LEVEL: 'debug',
   INFO_LEVEL: 'info',
   WARN_LEVEL: 'warn',
-  ERROR_LEVEL: 'error'
+  ERROR_LEVEL: 'error',
 } as const;

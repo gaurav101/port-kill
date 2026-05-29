@@ -69,7 +69,7 @@ import { portKill, portKillSync } from '@gks101/port-kill';
 ```ts
 const results = await portKill([3000, 8080], {
   verbose: true,
-  force: true
+  force: true,
 });
 ```
 
@@ -78,19 +78,19 @@ const results = await portKill([3000, 8080], {
 ```ts
 const results = portKillSync(3000, {
   dryRun: false,
-  force: true
+  force: true,
 });
 ```
 
 ### `PortKillOptions`
 
-| Option | Type | Default | Notes |
-|---|---|---|---|
-| `force` | `boolean` | `true` | POSIX: `SIGKILL`; Windows: adds `taskkill /F`. |
-| `signal` | `string` | `SIGKILL` or `SIGTERM` | Only used on POSIX. If `force: false`, fallback is `SIGTERM`. |
-| `verbose` | `boolean` | `false` | Enables debug-level logs. |
-| `dryRun` | `boolean` | `false` | Finds matching PIDs and returns success result without termination. |
-| `logger` | `(message, level) => void` | `undefined` | Receives raw message and level (`info`, `warn`, `error`, `debug`). |
+| Option    | Type                       | Default                | Notes                                                               |
+| --------- | -------------------------- | ---------------------- | ------------------------------------------------------------------- |
+| `force`   | `boolean`                  | `true`                 | POSIX: `SIGKILL`; Windows: adds `taskkill /F`.                      |
+| `signal`  | `string`                   | `SIGKILL` or `SIGTERM` | Only used on POSIX. If `force: false`, fallback is `SIGTERM`.       |
+| `verbose` | `boolean`                  | `false`                | Enables debug-level logs.                                           |
+| `dryRun`  | `boolean`                  | `false`                | Finds matching PIDs and returns success result without termination. |
+| `logger`  | `(message, level) => void` | `undefined`            | Receives raw message and level (`info`, `warn`, `error`, `debug`).  |
 
 ### `PortKillResult`
 

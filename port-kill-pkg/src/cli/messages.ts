@@ -28,5 +28,6 @@ export const CLI_HELP = `
 export const CLI_ERRORS = {
   MISSING_SIGNAL: 'Error: Please specify a signal name (e.g., SIGTERM, SIGINT) after --signal/-s.',
   NO_PORTS: 'Error: No target ports specified. Run "port-kill --help".',
-  invalidPortOrOption: (arg: string) => `Error: Invalid port or option "${arg}". Run 'port-kill --help' for details.`
+  invalidPortOrOption: (arg: string) =>
+    `Error: Invalid port or option "${arg}". Run 'port-kill --help' for details.`,
 } as const;

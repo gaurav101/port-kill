@@ -10,14 +10,14 @@ export const COMMAND_BUILDER_DEFAULTS = {
   gracefulSignal: 'SIGTERM',
   copyTimeoutMs: 1800,
   portMin: 1,
-  portMaxExclusive: 65536
+  portMaxExclusive: 65536,
 } as const;
 
 export const COMMAND_BUILDER_FLAGS = {
   verbose: '--verbose',
   noForce: '--no-force',
   dryRun: '--dry-run',
-  signal: '--signal'
+  signal: '--signal',
 } as const;
 
 export const COMMAND_BUILDER_VALUES = {
@@ -33,14 +33,14 @@ export const COMMAND_BUILDER_VALUES = {
   sectionCode: 'code',
   posixSignalPrefix: 'SIG',
   windowsPlatformName: 'windows',
-  tcpProtocol: 'tcp'
+  tcpProtocol: 'tcp',
 } as const;
 
 export const COMMAND_BUILDER_SIGNALS = [
   { value: 'SIGKILL', label: 'SIGKILL (Immediate Process Termination)' },
   { value: 'SIGTERM', label: 'SIGTERM (Graceful Handshake Request)' },
   { value: 'SIGINT', label: 'SIGINT (Keyboard/Manual Interrupt, Ctrl+C)' },
-  { value: 'SIGHUP', label: 'SIGHUP (Hangup terminal control)' }
+  { value: 'SIGHUP', label: 'SIGHUP (Hangup terminal control)' },
 ] as const;
 
 export const COMMAND_BUILDER_CONTENT = {
@@ -82,7 +82,7 @@ export const COMMAND_BUILDER_CONTENT = {
   windowsLabel: 'Windows (Win32)',
   posixBadge: 'POSIX',
   windowsBadge: 'Cmd/PS',
-  copiedCode: 'Copied Code!'
+  copiedCode: 'Copied Code!',
 } as const;
 
 export const COMMAND_BUILDER_OS_SUMMARIES = {
@@ -91,7 +91,7 @@ export const COMMAND_BUILDER_OS_SUMMARIES = {
   linux:
     'Uses lsof lookup index. Carries a fuser socket parse fallback sequence to ensure failsafe execution across standard Alpine/Debian platforms.',
   windows:
-    'Queries Windows netstat columns, matches exact bound ports via Regex, and propagates a child process tree tear-down (/T /F).'
+    'Queries Windows netstat columns, matches exact bound ports via Regex, and propagates a child process tree tear-down (/T /F).',
 } as const;
 
 export const COMMAND_BUILDER_SNIPPETS = {
@@ -100,5 +100,5 @@ export const COMMAND_BUILDER_SNIPPETS = {
   asyncTemplate: (portsParam: string, optionsStr: string): string =>
     `import { portKill } from '@gks101/port-kill';\n\nasync function initializeServer() {\n  try {\n    // Non-blocking asynchronous query & termination\n    const results = await portKill(${portsParam}${optionsStr});\n    console.log('Release details:', results);\n  } catch (err) {\n    console.error('Core port termination crashed', err);\n  }\n}`,
   customLoggerOption:
-    "  logger: (msg, level) => {\n    myCustomMetrics.log(`[PORT_KILL] [${level}] ${msg}`);\n  }"
+    '  logger: (msg, level) => {\n    myCustomMetrics.log(`[PORT_KILL] [${level}] ${msg}`);\n  }',
 } as const;

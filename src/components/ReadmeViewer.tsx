@@ -13,7 +13,7 @@ import {
   Key,
   Check,
   Copy,
-  Flame
+  Flame,
 } from 'lucide-react';
 import {
   README_VIEWER_API_ROWS,
@@ -23,7 +23,7 @@ import {
   README_VIEWER_CONSTANTS,
   README_VIEWER_FEATURES,
   README_VIEWER_INSTALL_SNIPPETS,
-  README_VIEWER_TEST_SNIPPET
+  README_VIEWER_TEST_SNIPPET,
 } from './constants/readmeViewer.constants';
 
 export default function ReadmeViewer() {
@@ -130,9 +130,7 @@ export default function ReadmeViewer() {
           <ShieldCheck className="w-5 h-5 text-blue-600" />
           {README_VIEWER_CONSTANTS.testingTitle}
         </h3>
-        <p className="text-xs text-slate-500">
-          {README_VIEWER_CONSTANTS.testHint}
-        </p>
+        <p className="text-xs text-slate-500">{README_VIEWER_CONSTANTS.testHint}</p>
 
         <div className="bg-slate-950 rounded-xl p-4 border border-slate-900 font-mono text-[11px] text-slate-300 leading-relaxed overflow-x-auto whitespace-pre">
           {README_VIEWER_TEST_SNIPPET}

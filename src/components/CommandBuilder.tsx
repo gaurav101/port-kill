@@ -14,7 +14,7 @@ import {
   COMMAND_BUILDER_OS_SUMMARIES,
   COMMAND_BUILDER_SIGNALS,
   COMMAND_BUILDER_SNIPPETS,
-  COMMAND_BUILDER_VALUES
+  COMMAND_BUILDER_VALUES,
 } from './constants/commandBuilder.constants';
 
 export default function CommandBuilder() {
@@ -77,8 +77,7 @@ export default function CommandBuilder() {
     if (dryRun) optionsObj.push(COMMAND_BUILDER_VALUES.optionDryRunTrue);
     if (hasCustomLogger) optionsObj.push(COMMAND_BUILDER_SNIPPETS.customLoggerOption);
 
-    const optionsStr =
-      optionsObj.length > 0 ? `,\n  {\n${optionsObj.join(',\n')}\n  }` : '';
+    const optionsStr = optionsObj.length > 0 ? `,\n  {\n${optionsObj.join(',\n')}\n  }` : '';
 
     if (isSync) {
       return COMMAND_BUILDER_SNIPPETS.syncTemplate(portsParam, optionsStr);
@@ -98,18 +97,18 @@ export default function CommandBuilder() {
       macos: {
         find: `lsof -t -n -i :${targetPort}`,
         kill: `kill -${shellSignal} <PIDs>`,
-        summary: COMMAND_BUILDER_OS_SUMMARIES.macos
+        summary: COMMAND_BUILDER_OS_SUMMARIES.macos,
       },
       linux: {
         find: `lsof -t -n -i :${targetPort} || fuser ${targetPort}/${COMMAND_BUILDER_VALUES.tcpProtocol}`,
         kill: `kill -${shellSignal} <PIDs>`,
-        summary: COMMAND_BUILDER_OS_SUMMARIES.linux
+        summary: COMMAND_BUILDER_OS_SUMMARIES.linux,
       },
       windows: {
         find: `netstat -ano (filter for :${targetPort})`,
         kill: `taskkill ${force ? '/F' : ''} /T /PID <PID>`,
-        summary: COMMAND_BUILDER_OS_SUMMARIES.windows
-      }
+        summary: COMMAND_BUILDER_OS_SUMMARIES.windows,
+      },
     };
   };
 
@@ -369,10 +368,11 @@ export default function CommandBuilder() {
                 contextmenu: false,
                 glyphMargin: false,
                 folding: false,
-                fontFamily: 'JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+                fontFamily:
+                  'JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
                 fontSize: 12,
                 lineHeight: 20,
-                padding: { top: 14, bottom: 14 }
+                padding: { top: 14, bottom: 14 },
               }}
             />
           </div>
@@ -432,12 +432,13 @@ export default function CommandBuilder() {
                 glyphMargin: false,
                 folding: true,
                 guides: {
-                  indentation: true
+                  indentation: true,
                 },
-                fontFamily: 'JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+                fontFamily:
+                  'JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
                 fontSize: 11,
                 lineHeight: 18,
-                padding: { top: 14, bottom: 14 }
+                padding: { top: 14, bottom: 14 },
               }}
             />
           </div>
@@ -471,12 +472,22 @@ export default function CommandBuilder() {
                 </p>
               </div>
               <div className="mt-4 pt-3 border-t border-gray-200/50 font-mono text-[10px] space-y-1">
-                <div className="text-gray-400 font-semibold">{COMMAND_BUILDER_CONTENT.findLabel}</div>
-                <div className="text-gray-800 bg-gray-200/40 p-1.5 rounded truncate" title={osDetails.macos.find}>
+                <div className="text-gray-400 font-semibold">
+                  {COMMAND_BUILDER_CONTENT.findLabel}
+                </div>
+                <div
+                  className="text-gray-800 bg-gray-200/40 p-1.5 rounded truncate"
+                  title={osDetails.macos.find}
+                >
                   {osDetails.macos.find}
                 </div>
-                <div className="text-gray-400 font-semibold mt-1">{COMMAND_BUILDER_CONTENT.killLabel}</div>
-                <div className="text-gray-800 bg-gray-200/40 p-1.5 rounded truncate" title={osDetails.macos.kill}>
+                <div className="text-gray-400 font-semibold mt-1">
+                  {COMMAND_BUILDER_CONTENT.killLabel}
+                </div>
+                <div
+                  className="text-gray-800 bg-gray-200/40 p-1.5 rounded truncate"
+                  title={osDetails.macos.kill}
+                >
                   {osDetails.macos.kill}
                 </div>
               </div>
@@ -497,12 +508,22 @@ export default function CommandBuilder() {
                 </p>
               </div>
               <div className="mt-4 pt-3 border-t border-gray-200/50 font-mono text-[10px] space-y-1">
-                <div className="text-gray-400 font-semibold">{COMMAND_BUILDER_CONTENT.findLabel}</div>
-                <div className="text-gray-800 bg-gray-200/40 p-1.5 rounded truncate" title={osDetails.linux.find}>
+                <div className="text-gray-400 font-semibold">
+                  {COMMAND_BUILDER_CONTENT.findLabel}
+                </div>
+                <div
+                  className="text-gray-800 bg-gray-200/40 p-1.5 rounded truncate"
+                  title={osDetails.linux.find}
+                >
                   {osDetails.linux.find}
                 </div>
-                <div className="text-gray-400 font-semibold mt-1">{COMMAND_BUILDER_CONTENT.killLabel}</div>
-                <div className="text-gray-800 bg-gray-200/40 p-1.5 rounded truncate" title={osDetails.linux.kill}>
+                <div className="text-gray-400 font-semibold mt-1">
+                  {COMMAND_BUILDER_CONTENT.killLabel}
+                </div>
+                <div
+                  className="text-gray-800 bg-gray-200/40 p-1.5 rounded truncate"
+                  title={osDetails.linux.kill}
+                >
                   {osDetails.linux.kill}
                 </div>
               </div>
@@ -523,12 +544,22 @@ export default function CommandBuilder() {
                 </p>
               </div>
               <div className="mt-4 pt-3 border-t border-gray-200/50 font-mono text-[10px] space-y-1">
-                <div className="text-gray-400 font-semibold">{COMMAND_BUILDER_CONTENT.findLabel}</div>
-                <div className="text-gray-800 bg-gray-200/40 p-1.5 rounded truncate" title={osDetails.windows.find}>
+                <div className="text-gray-400 font-semibold">
+                  {COMMAND_BUILDER_CONTENT.findLabel}
+                </div>
+                <div
+                  className="text-gray-800 bg-gray-200/40 p-1.5 rounded truncate"
+                  title={osDetails.windows.find}
+                >
                   {osDetails.windows.find}
                 </div>
-                <div className="text-gray-400 font-semibold mt-1">{COMMAND_BUILDER_CONTENT.killLabel}</div>
-                <div className="text-gray-800 bg-gray-200/40 p-1.5 rounded truncate" title={osDetails.windows.kill}>
+                <div className="text-gray-400 font-semibold mt-1">
+                  {COMMAND_BUILDER_CONTENT.killLabel}
+                </div>
+                <div
+                  className="text-gray-800 bg-gray-200/40 p-1.5 rounded truncate"
+                  title={osDetails.windows.kill}
+                >
                   {osDetails.windows.kill}
                 </div>
               </div>

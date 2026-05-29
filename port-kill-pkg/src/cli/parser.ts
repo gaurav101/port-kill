@@ -27,7 +27,7 @@ export function parseCliArgs(args: string[]): CliParseResult {
     port: [],
     force: CLI_DEFAULT_OPTIONS.force,
     verbose: CLI_DEFAULT_OPTIONS.verbose,
-    dryRun: CLI_DEFAULT_OPTIONS.dryRun
+    dryRun: CLI_DEFAULT_OPTIONS.dryRun,
   };
 
   for (let i = 0; i < args.length; i++) {

@@ -19,5 +19,5 @@ export const CODE_EXPLORER_CONSTANTS = {
   metricZeroDeps: '• Zero Dependencies',
   metricCoreLines: '• Typed API + CLI Surface',
   metricPosix: '• Full POSIX Support',
-  metricWindows: '• Full Windows Support'
+  metricWindows: '• Full Windows Support',
 } as const;

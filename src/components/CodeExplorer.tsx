@@ -7,15 +7,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import Editor from '@monaco-editor/react';
 import { LIBRARY_FILES } from '../data/mockFiles';
-import {
-  FileCode,
-  Copy,
-  Check,
-  Info,
-  FileJson,
-  Layers,
-  Activity
-} from 'lucide-react';
+import { FileCode, Copy, Check, Info, FileJson, Layers, Activity } from 'lucide-react';
 import { CODE_EXPLORER_CONSTANTS } from './constants/codeExplorer.constants';
 
 function normalizeEditorLanguage(language: string): string {
@@ -31,8 +23,7 @@ export default function CodeExplorer() {
   const [copied, setCopied] = useState<boolean>(false);
 
   const activeFile =
-    LIBRARY_FILES[activeFileIdx] ||
-    LIBRARY_FILES[CODE_EXPLORER_CONSTANTS.defaultActiveFileIndex];
+    LIBRARY_FILES[activeFileIdx] || LIBRARY_FILES[CODE_EXPLORER_CONSTANTS.defaultActiveFileIndex];
 
   const handleCopy = () => {
     navigator.clipboard.writeText(activeFile.content);
@@ -76,12 +67,12 @@ export default function CodeExplorer() {
                   }}
                   className={`w-full text-left p-2.5 rounded-xl border transition-all flex items-start gap-3 cursor-pointer ${isActive ? 'bg-blue-50/40 border-blue-200 text-slate-900 font-semibold' : 'bg-slate-50/60 hover:bg-slate-100/60 border-transparent text-slate-600'}`}
                 >
-                  <div className="mt-0.5">
-                    {getFileIcon(file.name)}
-                  </div>
+                  <div className="mt-0.5">{getFileIcon(file.name)}</div>
                   <div className="space-y-0.5 min-w-0 flex-1">
                     <p className="text-xs font-mono truncate">{file.name}</p>
-                    <p className="text-[10px] text-gray-400 truncate leading-tight">{file.description}</p>
+                    <p className="text-[10px] text-gray-400 truncate leading-tight">
+                      {file.description}
+                    </p>
                   </div>
                 </button>
               );
@@ -110,9 +101,7 @@ export default function CodeExplorer() {
         <div className="flex items-center justify-between bg-slate-950 px-5 py-3 border-b border-slate-900 select-none">
           <div className="flex items-center gap-2.5">
             <span className="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block" />
-            <div className="font-mono text-xs text-slate-300">
-              {activeFile.path}
-            </div>
+            <div className="font-mono text-xs text-slate-300">{activeFile.path}</div>
             <span className="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded font-mono font-medium">
               {activeFile.language}
             </span>
@@ -136,7 +125,10 @@ export default function CodeExplorer() {
                   <Check className="w-3.5 h-3.5" /> {CODE_EXPLORER_CONSTANTS.copiedLabel}
                 </motion.span>
               ) : (
-                <motion.span key="copy" className="flex items-center gap-1 text-[11px] text-slate-400 font-mono hover:text-slate-200">
+                <motion.span
+                  key="copy"
+                  className="flex items-center gap-1 text-[11px] text-slate-400 font-mono hover:text-slate-200"
+                >
                   <Copy className="w-3.5 h-3.5" /> {CODE_EXPLORER_CONSTANTS.copyLabel}
                 </motion.span>
               )}
@@ -158,7 +150,8 @@ export default function CodeExplorer() {
               scrollBeyondLastLine: false,
               wordWrap: 'off',
               automaticLayout: true,
-              fontFamily: 'JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+              fontFamily:
+                'JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
               fontSize: 11,
               lineHeight: 18,
               tabSize: 2,
@@ -170,8 +163,8 @@ export default function CodeExplorer() {
               folding: true,
               glyphMargin: false,
               guides: {
-                indentation: true
-              }
+                indentation: true,
+              },
             }}
           />
         </div>

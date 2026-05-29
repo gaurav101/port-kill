@@ -5,29 +5,31 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  Cpu
-} from 'lucide-react';
+import { Cpu } from 'lucide-react';
 
 import Header from './components/Header';
 import CommandBuilder from './components/CommandBuilder';
 import TerminalPlayground from './components/TerminalPlayground';
 import CodeExplorer from './components/CodeExplorer';
 import ReadmeViewer from './components/ReadmeViewer';
-import { APP_EXTERNAL_LINKS, APP_FOOTER, APP_TABS, APP_TAB_IDS, TabId } from './constants/app.constants';
+import {
+  APP_EXTERNAL_LINKS,
+  APP_FOOTER,
+  APP_TABS,
+  APP_TAB_IDS,
+  TabId,
+} from './constants/app.constants';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabId>(APP_TAB_IDS.BUILDER);
 
   return (
     <div className="min-h-screen bg-slate-50 pb-20 flex flex-col font-sans select-none selection:bg-blue-50 selection:text-blue-950">
-      
       {/* Master Header Navigation */}
       <Header />
 
       {/*  Main View Wrapper */}
       <main className="max-w-7xl mx-auto px-6 mt-8 w-full flex-1 flex flex-col gap-8">
-        
         {/* Tab Navigator Pills */}
         <div className="flex flex-wrap gap-2 bg-slate-200/50 p-1.5 rounded-2xl border border-slate-200/60 backdrop-blur-sm self-start w-full">
           {APP_TABS.map((tab) => {
@@ -40,7 +42,7 @@ export default function App() {
               >
                 {tab.icon}
                 <span>{tab.name}</span>
-                
+
                 {isSelected && (
                   <motion.span
                     layoutId="activeTabIndicator"
@@ -83,7 +85,6 @@ export default function App() {
             </motion.div>
           </AnimatePresence>
         </div>
-
       </main>
 
       {/* 🛡️ Aesthetic Integrity Footer */}
@@ -94,11 +95,12 @@ export default function App() {
             <span>{APP_FOOTER.tagline}</span>
           </div>
           <div>
-            {APP_FOOTER.licensePrefix}<span className="font-semibold text-gray-600">{APP_FOOTER.licenseName}</span>{APP_FOOTER.licenseSuffix}
+            {APP_FOOTER.licensePrefix}
+            <span className="font-semibold text-gray-600">{APP_FOOTER.licenseName}</span>
+            {APP_FOOTER.licenseSuffix}
           </div>
         </div>
       </footer>
-
     </div>
   );
 }
