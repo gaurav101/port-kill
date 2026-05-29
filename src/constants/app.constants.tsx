@@ -45,7 +45,7 @@ export const APP_TABS: AppTabDefinition[] = [
     id: APP_TAB_IDS.README,
     name: 'Official Package README',
     icon: <BookOpen className="w-4 h-4" />,
-    description: 'Access the complete API guides, test suite teardoun setups, and live badge metrics.'
+    description: 'Access the complete API guide, test setup examples, and package metadata.'
   }
 ];
 

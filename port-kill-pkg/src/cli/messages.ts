@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export const CLI_VERSION = 'port-kill v1.0.0';
+export const CLI_VERSION = 'port-kill v1.0.1';
 
 export const CLI_HELP = `
   Usage: port-kill <ports...> [options]

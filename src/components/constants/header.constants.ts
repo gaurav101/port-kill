@@ -17,7 +17,7 @@ export const HEADER_DEFAULT_ACTION = {
 } as const;
 
 export const HEADER_CONTENT = {
-  releaseTag: 'v1.0.0 Release',
+  releaseTag: 'v1.0.1 Release',
   zeroDepsTag: 'Zero Dependencies CLI',
   packageName: '@gks101/port-kill',
   description:
@@ -29,9 +29,8 @@ export const HEADER_CONTENT = {
 } as const;
 
 export const HEADER_BADGES = [
-  { label: 'npm', value: 'v1.0.0', valueClass: 'bg-blue-500' },
-  { label: 'build', value: 'passing', valueClass: 'bg-emerald-500' },
-  { label: 'coverage', value: '100%', valueClass: 'bg-blue-600' },
-  { label: 'license', value: 'Apache-2.0', valueClass: 'bg-orange-500' },
-  { label: 'PRs', value: 'welcome', valueClass: 'bg-amber-500' }
+  { label: 'npm', value: 'v1.0.1', valueClass: 'bg-blue-500' },
+  { label: 'node', value: '>=16', valueClass: 'bg-emerald-500' },
+  { label: 'runtime deps', value: '0', valueClass: 'bg-blue-600' },
+  { label: 'license', value: 'Apache-2.0', valueClass: 'bg-orange-500' }
 ] as const;

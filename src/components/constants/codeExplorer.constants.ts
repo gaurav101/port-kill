@@ -17,7 +17,7 @@ export const CODE_EXPLORER_CONSTANTS = {
     'Click on any file to inspect the actual codebase of the port-kill library. The package now uses Strategy and Factory Method patterns for platform behavior.',
   metricsTitle: 'Maintainability Metrics',
   metricZeroDeps: '• Zero Dependencies',
-  metricCoreLines: '• ~250 Lines Core Code',
+  metricCoreLines: '• Typed API + CLI Surface',
   metricPosix: '• Full POSIX Support',
   metricWindows: '• Full Windows Support'
 } as const;
