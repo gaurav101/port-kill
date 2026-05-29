@@ -5,7 +5,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Play, PlayCircle, RefreshCw, Terminal as TermIcon, CircleAlert } from 'lucide-react';
+import { Play, PlayCircle, RefreshCw, Terminal as TermIcon } from 'lucide-react';
 
 interface LogLine {
   text: string;
@@ -113,8 +113,9 @@ export default function TerminalPlayground() {
         });
       } else {
         const selectedSig = preset.force ? 'SIGKILL' : preset.signal;
+        const shellSig = selectedSig.startsWith('SIG') ? selectedSig.slice(3) : selectedSig;
         sequence.push({ text: `[port-kill] [INFO] Preparing to send signal ${selectedSig} to PIDs: [${activePids.join(', ')}]`, type: 'info', delay: 3000 });
-        sequence.push({ text: `[port-kill] [DEBUG] Executing command: "kill -${selectedSig} ${activePids.join(' ')}"`, type: 'debug', delay: 3300 });
+        sequence.push({ text: `[port-kill] [DEBUG] Executing command: "kill -${shellSig} ${activePids.join(' ')}"`, type: 'debug', delay: 3300 });
         sequence.push({ text: `[port-kill] [INFO] Processes [${activePids.join(', ')}] terminated via native signal successfully.`, type: 'info', delay: 3600 });
       }
 

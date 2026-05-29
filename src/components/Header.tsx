@@ -4,18 +4,11 @@
  */
 
 import { useState } from 'react';
-import { motion } from 'motion/react';
-import { Copy, Check, Terminal, Shield, Sparkles } from 'lucide-react';
+import { Copy, Check, Terminal, Sparkles } from 'lucide-react';
+import { HEADER_BADGES, HEADER_CONTENT, HEADER_COPY_ACTIONS, HEADER_INSTALL_COMMANDS } from './header.constants';
 
 export default function Header() {
   const [copiedCmd, setCopiedCmd] = useState<string | null>(null);
-
-  const installCommands = {
-    npm: 'npm install --save-dev @gks101/port-kill',
-    yarn: 'yarn add -D @gks101/port-kill',
-    pnpm: 'pnpm add -D @gks101/port-kill',
-    npx: 'npx @gks101/port-kill 3000'
-  };
 
   const copyToClipboard = (cmdText: string, label: string) => {
     navigator.clipboard.writeText(cmdText);
@@ -31,47 +24,29 @@ export default function Header() {
         <div className="space-y-2">
           <div className="flex items-center gap-2.5">
             <span className="bg-slate-100 text-slate-800 px-2.5 py-1 rounded text-xs font-mono font-semibold tracking-wider border border-slate-200 uppercase">
-              v1.0.0 Release
+              {HEADER_CONTENT.releaseTag}
             </span>
             <div className="flex items-center gap-1 text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100 font-semibold">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Zero Dependencies CLI</span>
+              <span>{HEADER_CONTENT.zeroDepsTag}</span>
             </div>
           </div>
           
           <h1 className="text-2xl font-bold tracking-tight text-slate-800 font-sans flex items-center gap-2">
-            @gks101/port-kill
+            {HEADER_CONTENT.packageName}
           </h1>
           <p className="text-sm text-slate-500 max-w-xl leading-relaxed">
-            Highly maintainable, lightweight cross-platform port termination library and executable package.
+            {HEADER_CONTENT.description}
           </p>
           
           {/* Status Badges Row */}
           <div className="flex flex-wrap gap-2 pt-2">
-            <span className="inline-flex overflow-hidden rounded text-[11px] font-medium border border-slate-200 shadow-xs">
-              <span className="bg-slate-800 text-slate-100 px-2 py-0.5">npm</span>
-              <span className="bg-blue-500 text-white px-2 py-0.5 font-bold">v1.0.0</span>
-            </span>
-            
-            <span className="inline-flex overflow-hidden rounded text-[11px] font-medium border border-slate-200 shadow-xs">
-              <span className="bg-slate-800 text-slate-100 px-2 py-0.5">build</span>
-              <span className="bg-emerald-500 text-white px-2 py-0.5 font-bold">passing</span>
-            </span>
-            
-            <span className="inline-flex overflow-hidden rounded text-[11px] font-medium border border-slate-200 shadow-xs">
-              <span className="bg-slate-800 text-slate-100 px-2 py-0.5">coverage</span>
-              <span className="bg-blue-600 text-white px-2 py-0.5 font-bold">100%</span>
-            </span>
-            
-            <span className="inline-flex overflow-hidden rounded text-[11px] font-medium border border-slate-200 shadow-xs">
-              <span className="bg-slate-800 text-slate-100 px-2 py-0.5">license</span>
-              <span className="bg-orange-500 text-white px-2 py-0.5 font-bold">Apache-2.0</span>
-            </span>
-            
-            <span className="inline-flex overflow-hidden rounded text-[11px] font-medium border border-slate-200 shadow-xs">
-              <span className="bg-slate-800 text-slate-100 px-2 py-0.5">PRs</span>
-              <span className="bg-amber-500 text-white px-2 py-0.5 font-bold">welcome</span>
-            </span>
+            {HEADER_BADGES.map((badge) => (
+              <span key={badge.label} className="inline-flex overflow-hidden rounded text-[11px] font-medium border border-slate-200 shadow-xs">
+                <span className="bg-slate-800 text-slate-100 px-2 py-0.5">{badge.label}</span>
+                <span className={`${badge.valueClass} text-white px-2 py-0.5 font-bold`}>{badge.value}</span>
+              </span>
+            ))}
           </div>
         </div>
 
@@ -80,27 +55,27 @@ export default function Header() {
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-200/60">
             <div className="flex items-center gap-1.5 text-xs text-slate-500 font-mono">
               <Terminal className="w-3.5 h-3.5 text-slate-400" />
-              <span>Core Installation</span>
+              <span>{HEADER_CONTENT.installTitle}</span>
             </div>
             <div className="flex gap-2">
-              {['npm', 'npx'].map((type) => (
+              {HEADER_COPY_ACTIONS.map((type) => (
                 <button
                   key={type}
-                  onClick={() => copyToClipboard(installCommands[type as keyof typeof installCommands], type)}
+                  onClick={() => copyToClipboard(HEADER_INSTALL_COMMANDS[type], type)}
                   className="text-[11px] font-semibold text-slate-600 bg-white hover:bg-slate-100 px-2 py-0.5 rounded border border-slate-250 transition-colors cursor-pointer"
                 >
-                  {copiedCmd === type ? 'Copied' : `Use ${type}`}
+                  {copiedCmd === type ? HEADER_CONTENT.copiedLabel : `${HEADER_CONTENT.usePrefix}${type}`}
                 </button>
               ))}
             </div>
           </div>
           
           <div className="flex items-center justify-between gap-4 bg-slate-900/5 rounded p-2.5 font-mono text-[12px] text-slate-800">
-            <span className="truncate">{installCommands.npm}</span>
+            <span className="truncate">{HEADER_INSTALL_COMMANDS.npm}</span>
             <button
-              onClick={() => copyToClipboard(installCommands.npm, 'npm')}
+              onClick={() => copyToClipboard(HEADER_INSTALL_COMMANDS.npm, 'npm')}
               className="text-slate-400 hover:text-slate-700 p-1 rounded hover:bg-slate-200/50 transition-colors"
-              title="Copy install command"
+              title={HEADER_CONTENT.copyInstallTitle}
             >
               {copiedCmd === 'npm' ? (
                 <Check className="w-4 h-4 text-blue-600" />

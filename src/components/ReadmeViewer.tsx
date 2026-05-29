@@ -6,7 +6,7 @@
 import { useState } from 'react';
 import { 
   Terminal, ShieldCheck, HeartHandshake, GitPullRequest, 
-  HelpCircle, BookOpen, Key, Check, Copy, Flame
+  BookOpen, Key, Check, Copy, Flame
 } from 'lucide-react';
 
 export default function ReadmeViewer() {
@@ -237,7 +237,28 @@ describe('API Route Assertion Suites', () => {
         </div>
       </div>
 
-      {/* Section 6: Contributions */}
+      {/* Section 6: Architecture */}
+      <div className="space-y-4 pt-2 font-sans">
+        <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+          <GitPullRequest className="w-5 h-5 text-blue-600" />
+          📂 Structure & Architecture
+        </h3>
+        <p className="text-xs text-slate-500 leading-relaxed">
+          Platform behavior is isolated behind strategies. Command creation lives in command factories, and a runtime factory selects the correct strategy from <code>process.platform</code>.
+        </p>
+        <div className="bg-slate-950 rounded-xl p-4 border border-slate-900 font-mono text-[11px] text-slate-300 leading-relaxed overflow-x-auto whitespace-pre">
+{`port-kill-pkg/
+├── src/
+│   ├── index.ts              # portKill / portKillSync
+│   ├── types.ts              # Public TypeScript interfaces
+│   ├── cli/                  # CLI entry, parser, messages, reporter
+│   ├── commands/             # Command constants, diagnostics, factories, runner
+│   ├── platform/             # Strategy factory, strategies, result service
+│   └── shared/               # Shared logger adapter`}
+        </div>
+      </div>
+
+      {/* Section 7: Contributions */}
       <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 flex items-start gap-3 font-sans">
         <HeartHandshake className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
         <div className="space-y-1.5 text-xs">

@@ -4,7 +4,7 @@
  */
 
 import { PortKillOptions, PortKillResult } from './types';
-import { killSinglePort } from './platforms';
+import { killSinglePort } from './platform/service';
 
 export * from './types';
 

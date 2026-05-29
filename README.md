@@ -142,13 +142,36 @@ describe('Express Integration Tests', () => {
 
 ## 📂 Structure & Architecture
 
+The package uses a small Strategy + Factory Method architecture for long-term maintenance:
+
+- `PlatformStrategy` isolates platform behavior for process discovery and termination.
+- `UnixPortStrategy` handles `lsof`, `fuser`, and POSIX `kill` behavior.
+- `WindowsPortStrategy` handles `netstat` parsing and `taskkill` behavior.
+- `PlatformStrategyFactory` selects the correct strategy from `process.platform`.
+- `UnixCommandFactory` and `WindowsCommandFactory` create the shell commands used by each strategy.
+
 ```text
 port-kill-pkg/
 ├── src/
-│   ├── index.ts        # Programmatic endpoints (portKill / portKillSync)
-│   ├── cli.ts          # Zero-dependency CLI interactive helper & arguments router
-│   ├── platforms.ts    # System operations controller (Windows vs Unix runtime)
-│   └── types.ts        # Fully documented Typescript interfaces
+│   ├── index.ts              # Programmatic endpoints (portKill / portKillSync)
+│   ├── types.ts              # Public TypeScript interfaces
+│   ├── cli/
+│   │   ├── index.ts          # Thin CLI entrypoint
+│   │   ├── messages.ts       # CLI help, version, and error text
+│   │   ├── parser.ts         # Typed CLI argument parser
+│   │   └── reporter.ts       # CLI output rendering
+│   ├── commands/
+│   │   ├── constants.ts      # Command binaries, flags, and shared arguments
+│   │   ├── diagnostics.ts    # User-facing command failure diagnostics
+│   │   ├── factories.ts      # Factory Method command builders per platform
+│   │   └── runner.ts         # Shared shell execution boundary
+│   ├── platform/
+│   │   ├── service.ts        # Result orchestration over the selected strategy
+│   │   ├── results.ts        # Result factory helpers
+│   │   ├── factory.ts        # Factory Method for runtime strategy selection
+│   │   └── strategies.ts     # POSIX and Windows strategy implementations
+│   └── shared/
+│       └── logger.ts         # Shared logger adapter
 ├── package.json        # NPM package descriptor
 ├── tsconfig.json       # Compiling presets for Node modules (dist outputs)
 └── README.md           # This document

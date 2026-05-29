@@ -5,8 +5,8 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { LIBRARY_FILES, SourceFile } from '../data/mockFiles';
-import { FileCode, Copy, Check, Info, FileJson, Badge, Layers, Activity } from 'lucide-react';
+import { LIBRARY_FILES } from '../data/mockFiles';
+import { FileCode, Copy, Check, Info, FileJson, Layers, Activity } from 'lucide-react';
 
 export default function CodeExplorer() {
   const [activeFileIdx, setActiveFileIdx] = useState<number>(0);
@@ -42,7 +42,7 @@ export default function CodeExplorer() {
           </div>
           
           <p className="text-xs text-gray-400 leading-normal">
-            Click on any file to inspect the actual codebase of the port-kill library. Notice the highly modular structure.
+            Click on any file to inspect the actual codebase of the port-kill library. The package now uses Strategy and Factory Method patterns for platform behavior.
           </p>
 
           <div className="space-y-1.5 overflow-y-auto max-h-[380px] pr-1">

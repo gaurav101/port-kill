@@ -6,8 +6,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
-  Sliders, Terminal as TermIcon, FileCode, BookOpen, 
-  HelpCircle, ShieldAlert, Cpu, Layers 
+  Cpu
 } from 'lucide-react';
 
 import Header from './components/Header';
@@ -15,51 +14,23 @@ import CommandBuilder from './components/CommandBuilder';
 import TerminalPlayground from './components/TerminalPlayground';
 import CodeExplorer from './components/CodeExplorer';
 import ReadmeViewer from './components/ReadmeViewer';
-
-type TabId = 'builder' | 'terminal' | 'explorer' | 'readme';
+import { APP_FOOTER, APP_TABS, TabId } from './constants/app.constants';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabId>('builder');
 
-  const tabs = [
-    {
-      id: 'builder' as TabId,
-      name: 'Interactive Code Builder',
-      icon: <Sliders className="w-4 h-4" />,
-      description: 'Design custom programmatic snippets or CLI sequences instantly with multiple options.'
-    },
-    {
-      id: 'terminal' as TabId,
-      name: 'Sandbox Terminal Runtime',
-      icon: <TermIcon className="w-4 h-4" />,
-      description: 'Trace step-by-step diagnostic loops and verify POSIX / Windows process kills.'
-    },
-    {
-      id: 'explorer' as TabId,
-      name: 'Package Code Explorer',
-      icon: <FileCode className="w-4 h-4" />,
-      description: 'Review the actual NPM package TypeScript source code structured for high maintainability.'
-    },
-    {
-      id: 'readme' as TabId,
-      name: 'Official Package README',
-      icon: <BookOpen className="w-4 h-4" />,
-      description: 'Access the complete API guides, test suite teardoun setups, and live badge metrics.'
-    }
-  ];
-
   return (
     <div className="min-h-screen bg-slate-50 pb-20 flex flex-col font-sans select-none selection:bg-blue-50 selection:text-blue-950">
       
-      {/* 🚀 Master Header Navigation */}
+      {/* Master Header Navigation */}
       <Header />
 
-      {/* 🖥️ Main View Wrapper */}
+      {/*  Main View Wrapper */}
       <main className="max-w-7xl mx-auto px-6 mt-8 w-full flex-1 flex flex-col gap-8">
         
         {/* Tab Navigator Pills */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 bg-slate-200/50 p-1.5 rounded-2xl border border-slate-200/60 backdrop-blur-sm self-start w-full md:w-auto">
-          {tabs.map((tab) => {
+          {APP_TABS.map((tab) => {
             const isSelected = activeTab === tab.id;
             return (
               <button
@@ -108,10 +79,10 @@ export default function App() {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-1.5 font-mono text-gray-400">
             <Cpu className="w-3.5 h-3.5" />
-            <span>@gks101/port-kill - Designed for extreme stability and lightning-fast developer teardowns.</span>
+            <span>{APP_FOOTER.tagline}</span>
           </div>
           <div>
-            Licensed under the <span className="font-semibold text-gray-600">Apache 2.0 License</span>.
+            {APP_FOOTER.licensePrefix}<span className="font-semibold text-gray-600">{APP_FOOTER.licenseName}</span>{APP_FOOTER.licenseSuffix}
           </div>
         </div>
       </footer>
