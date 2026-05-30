@@ -8,9 +8,20 @@ export const HEADER_INSTALL_COMMANDS = {
   yarn: 'yarn add -D @gks101/port-kill',
   pnpm: 'pnpm add -D @gks101/port-kill',
   npx: 'npx @gks101/port-kill 3000',
+  global: 'npm install -g @gks101/port-kill',
 } as const;
 
-export const HEADER_COPY_ACTIONS = ['npm', 'npx'] as const;
+export const HEADER_COPY_ACTIONS = ['npm', 'npx', 'global'] as const;
+
+export const HEADER_INSTALL_ACTION_LABELS = {
+  npm: 'Use npm',
+  npx: 'Use npx',
+  global: 'Use global',
+} as const;
+
+export const HEADER_INSTALL_NOTES: Partial<Record<keyof typeof HEADER_INSTALL_COMMANDS, string>> = {
+  global: '# Run once to install globally on this machine',
+};
 
 export const HEADER_DEFAULT_ACTION = {
   primaryInstallCopyKey: 'npm',
