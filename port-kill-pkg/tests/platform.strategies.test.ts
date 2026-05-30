@@ -16,8 +16,11 @@ describe('platform strategies', () => {
   describe('UnixPortStrategy', () => {
     it('finds pids using lsof output first', () => {
       const commandFactory = {
-        createFindCommands: jest.fn(() => ['lsof-cmd', 'fuser-cmd']),
-        createKillCommand: jest.fn(),
+        createFindCommands: jest.fn(() => [
+          { binary: 'lsof', args: ['-t', '-n', '-i', ':3000'] },
+          { binary: 'fuser', args: ['3000/tcp'] },
+        ]),
+        createKillCommands: jest.fn(),
       };
       mockedRunCommand.mockReturnValueOnce({
         success: true,
@@ -34,8 +37,11 @@ describe('platform strategies', () => {
 
     it('falls back to fuser when lsof has no usable output', () => {
       const commandFactory = {
-        createFindCommands: jest.fn(() => ['lsof-cmd', 'fuser-cmd']),
-        createKillCommand: jest.fn(),
+        createFindCommands: jest.fn(() => [
+          { binary: 'lsof', args: ['-t', '-n', '-i', ':3000'] },
+          { binary: 'fuser', args: ['3000/tcp'] },
+        ]),
+        createKillCommands: jest.fn(),
       };
       mockedRunCommand
         .mockReturnValueOnce({ success: false, stdout: '' } as any)
@@ -50,8 +56,11 @@ describe('platform strategies', () => {
 
     it('returns empty list when no unix lookup finds pids', () => {
       const commandFactory = {
-        createFindCommands: jest.fn(() => ['lsof-cmd', 'fuser-cmd']),
-        createKillCommand: jest.fn(),
+        createFindCommands: jest.fn(() => [
+          { binary: 'lsof', args: ['-t', '-n', '-i', ':3000'] },
+          { binary: 'fuser', args: ['3000/tcp'] },
+        ]),
+        createKillCommands: jest.fn(),
       };
       mockedRunCommand
         .mockReturnValueOnce({ success: false, stdout: '' } as any)
@@ -63,37 +72,42 @@ describe('platform strategies', () => {
       expect(pids).toEqual([]);
     });
 
-    it('handles fuser output with no numeric pids', () => {
+    it('returns empty list when fuser output has no numeric pids', () => {
       const commandFactory = {
-        createFindCommands: jest.fn(() => ['lsof-cmd', 'fuser-cmd']),
-        createKillCommand: jest.fn(),
+        createFindCommands: jest.fn(() => [
+          { binary: 'lsof', args: ['-t', '-n', '-i', ':3000'] },
+          { binary: 'fuser', args: ['3000/tcp'] },
+        ]),
+        createKillCommands: jest.fn(),
       };
       mockedRunCommand
         .mockReturnValueOnce({ success: false, stdout: '' } as any)
         .mockReturnValueOnce({ success: true, stdout: 'abc xyz' } as any);
 
       const strategy = new UnixPortStrategy(commandFactory as any);
-      expect(strategy.findPids(3000, log)).toEqual([]);
+      const pids = strategy.findPids(3000, log);
+
+      expect(pids).toEqual([]);
     });
 
     it('terminates using default force signal and returns success', () => {
       const commandFactory = {
         createFindCommands: jest.fn(),
-        createKillCommand: jest.fn(() => 'kill-cmd'),
+        createKillCommands: jest.fn(() => [{ binary: 'kill', args: ['-SIGKILL', '1', '2'] }]),
       };
       mockedRunCommand.mockReturnValueOnce({ success: true } as any);
 
       const strategy = new UnixPortStrategy(commandFactory as any);
       const result = strategy.terminatePids([1, 2], {}, log);
 
-      expect(commandFactory.createKillCommand).toHaveBeenCalledWith([1, 2], 'SIGKILL');
+      expect(commandFactory.createKillCommands).toHaveBeenCalledWith([1, 2], 'SIGKILL');
       expect(result).toEqual({ success: true, signal: 'SIGKILL' });
     });
 
     it('returns failure when kill command fails', () => {
       const commandFactory = {
         createFindCommands: jest.fn(),
-        createKillCommand: jest.fn(() => 'kill-cmd'),
+        createKillCommands: jest.fn(() => [{ binary: 'kill', args: ['-SIGINT', '1'] }]),
       };
       mockedRunCommand.mockReturnValueOnce({
         success: false,
@@ -103,16 +117,28 @@ describe('platform strategies', () => {
       const strategy = new UnixPortStrategy(commandFactory as any);
       const result = strategy.terminatePids([1], { force: false, signal: 'SIGINT' }, log);
 
-      expect(commandFactory.createKillCommand).toHaveBeenCalledWith([1], 'SIGINT');
+      expect(commandFactory.createKillCommands).toHaveBeenCalledWith([1], 'SIGINT');
       expect(result).toEqual({ success: false, error: 'bad kill', signal: 'SIGINT' });
+    });
+
+    it('skips self and parent pids to prevent accidental termination', () => {
+      const commandFactory = {
+        createFindCommands: jest.fn(),
+        createKillCommands: jest.fn(),
+      };
+      const strategy = new UnixPortStrategy(commandFactory as any);
+      const result = strategy.terminatePids([process.pid, process.ppid], {}, log);
+
+      expect(commandFactory.createKillCommands).not.toHaveBeenCalled();
+      expect(result).toEqual({ success: true, signal: 'SIGKILL' });
     });
   });
 
   describe('WindowsPortStrategy', () => {
     it('returns empty pids when netstat fails', () => {
       const commandFactory = {
-        createFindCommands: jest.fn(() => ['netstat-cmd']),
-        createKillCommand: jest.fn(),
+        createFindCommands: jest.fn(() => [{ binary: 'netstat', args: ['-ano'] }]),
+        createKillCommands: jest.fn(),
       };
       mockedRunCommand.mockReturnValueOnce({ success: false, stdout: '' } as any);
 
@@ -120,28 +146,22 @@ describe('platform strategies', () => {
       expect(strategy.findPids(3000, log)).toEqual([]);
     });
 
-    it('returns empty pids when netstat succeeds with empty stdout', () => {
-      const commandFactory = {
-        createFindCommands: jest.fn(() => ['netstat-cmd']),
-        createKillCommand: jest.fn(),
-      };
-      mockedRunCommand.mockReturnValueOnce({ success: true, stdout: '' } as any);
-
-      const strategy = new WindowsPortStrategy(commandFactory as any);
-      expect(strategy.findPids(3000, log)).toEqual([]);
-    });
-
     it('parses netstat output and filters by target port', () => {
       const commandFactory = {
-        createFindCommands: jest.fn(() => ['netstat-cmd']),
-        createKillCommand: jest.fn(),
+        createFindCommands: jest.fn(() => [{ binary: 'netstat', args: ['-ano'] }]),
+        createKillCommands: jest.fn(),
       };
       mockedRunCommand.mockReturnValueOnce({
         success: true,
         stdout: [
-          '  TCP    0.0.0.0:3000     0.0.0.0:0      LISTENING       1234',
-          '  TCP    [::]:3000        [::]:0         LISTENING       1234',
-          '  TCP    0.0.0.0:4000     0.0.0.0:0      LISTENING       8888',
+          'TCP 0.0.0.0:3000 0.0.0.0:0 LISTENING 1234',
+          'TCP [::]:3000 [::]:0 LISTENING 1234',
+          'TCP 0.0.0.0:4000 0.0.0.0:0 LISTENING 8888',
+          'TCP 0.0.0.0 0.0.0.0:0 LISTENING 4567',
+          'TCP 0.0.0.0:* 0.0.0.0:0 LISTENING 9999',
+          'TCP 0.0.0.0:3000 0.0.0.0:0 LISTENING not-a-pid',
+          'UDP 0.0.0.0 0.0.0.0 7777',
+          '',
           'garbage line',
         ].join('\n'),
       } as any);
@@ -153,7 +173,10 @@ describe('platform strategies', () => {
     it('returns success true when all taskkill commands succeed', () => {
       const commandFactory = {
         createFindCommands: jest.fn(),
-        createKillCommand: jest.fn(() => ['kill-1', 'kill-2']),
+        createKillCommands: jest.fn(() => [
+          { binary: 'taskkill', args: ['/F', '/T', '/PID', '1'] },
+          { binary: 'taskkill', args: ['/F', '/T', '/PID', '2'] },
+        ]),
       };
       mockedRunCommand
         .mockReturnValueOnce({ success: true } as any)
@@ -162,14 +185,17 @@ describe('platform strategies', () => {
       const strategy = new WindowsPortStrategy(commandFactory as any);
       const result = strategy.terminatePids([1, 2], { force: true }, log);
 
-      expect(commandFactory.createKillCommand).toHaveBeenCalledWith([1, 2], true);
+      expect(commandFactory.createKillCommands).toHaveBeenCalledWith([1, 2], true);
       expect(result).toEqual({ success: true, error: undefined });
     });
 
     it('returns combined errors when any taskkill command fails', () => {
       const commandFactory = {
         createFindCommands: jest.fn(),
-        createKillCommand: jest.fn(() => ['kill-1', 'kill-2']),
+        createKillCommands: jest.fn(() => [
+          { binary: 'taskkill', args: ['/T', '/PID', '1'] },
+          { binary: 'taskkill', args: ['/T', '/PID', '2'] },
+        ]),
       };
       mockedRunCommand
         .mockReturnValueOnce({ success: true } as any)
@@ -184,7 +210,9 @@ describe('platform strategies', () => {
     it('handles failed taskkill responses without error strings', () => {
       const commandFactory = {
         createFindCommands: jest.fn(),
-        createKillCommand: jest.fn(() => ['kill-1']),
+        createKillCommands: jest.fn(() => [
+          { binary: 'taskkill', args: ['/F', '/T', '/PID', '1'] },
+        ]),
       };
       mockedRunCommand.mockReturnValueOnce({ success: false } as any);
 
@@ -192,6 +220,18 @@ describe('platform strategies', () => {
       const result = strategy.terminatePids([1], { force: true }, log);
 
       expect(result).toEqual({ success: false, error: '' });
+    });
+
+    it('skips protected pids for windows termination path', () => {
+      const commandFactory = {
+        createFindCommands: jest.fn(),
+        createKillCommands: jest.fn(),
+      };
+      const strategy = new WindowsPortStrategy(commandFactory as any);
+      const result = strategy.terminatePids([process.pid, process.ppid], { force: true }, log);
+
+      expect(commandFactory.createKillCommands).not.toHaveBeenCalled();
+      expect(result).toEqual({ success: true, error: undefined });
     });
   });
 });

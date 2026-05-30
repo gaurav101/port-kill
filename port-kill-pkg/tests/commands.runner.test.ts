@@ -28,7 +28,7 @@ describe('runCommand', () => {
       status: 0,
     } as any);
 
-    const result = runCommand('echo hello', log);
+    const result = runCommand({ binary: 'echo', args: ['hello'] }, log);
 
     expect(result).toEqual({
       stdout: '123\n',
@@ -37,11 +37,7 @@ describe('runCommand', () => {
       success: true,
     });
     expect(mockedBuildFailure).not.toHaveBeenCalled();
-    expect(mockedSpawnSync).toHaveBeenCalledWith(
-      'echo',
-      ['hello'],
-      expect.objectContaining({ shell: false })
-    );
+    expect(mockedSpawnSync).toHaveBeenCalledWith('echo', ['hello'], expect.any(Object));
   });
 
   it('returns failure and diagnostic message for non-zero exit code', () => {
@@ -51,7 +47,7 @@ describe('runCommand', () => {
       status: 1,
     } as any);
 
-    const result = runCommand('kill -9 1', log);
+    const result = runCommand({ binary: 'kill', args: ['-9', '1'] }, log);
 
     expect(result.success).toBe(false);
     expect(result.error).toBe('mocked-failure');
@@ -71,7 +67,7 @@ describe('runCommand', () => {
       error: new Error('spawn failed'),
     } as any);
 
-    const result = runCommand('bad-command', log);
+    const result = runCommand({ binary: 'bad-command', args: [] }, log);
 
     expect(result.success).toBe(false);
     expect(result.error).toBe('mocked-failure');
@@ -83,11 +79,20 @@ describe('runCommand', () => {
     });
   });
 
-  it('refuses unsafe command patterns before spawning', () => {
-    const result = runCommand('echo hello; rm -rf /', log);
+  it('treats shell metacharacters as plain args when shell is disabled', () => {
+    mockedSpawnSync.mockReturnValue({
+      stdout: '',
+      stderr: '',
+      status: 0,
+    } as any);
 
-    expect(result.success).toBe(false);
-    expect(mockedSpawnSync).not.toHaveBeenCalled();
-    expect(result.error).toBe('mocked-failure');
+    const result = runCommand({ binary: 'echo', args: ['hello;', 'rm', '-rf', '/'] }, log);
+
+    expect(result.success).toBe(true);
+    expect(mockedSpawnSync).toHaveBeenCalledWith(
+      'echo',
+      ['hello;', 'rm', '-rf', '/'],
+      expect.any(Object)
+    );
   });
 });

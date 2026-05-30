@@ -9,7 +9,29 @@ import { CLI_DEFAULT_OPTIONS, CLI_FLAGS, CLI_PARSE_TYPES } from './constants';
 
 const PORT_MIN = 1;
 const PORT_MAX = 65535;
-const SIGNAL_PATTERN = /^SIG?[A-Z]+$/i;
+const ALLOWED_SIGNALS = new Set([
+  'SIGHUP',
+  'SIGINT',
+  'SIGQUIT',
+  'SIGILL',
+  'SIGTRAP',
+  'SIGABRT',
+  'SIGBUS',
+  'SIGFPE',
+  'SIGKILL',
+  'SIGUSR1',
+  'SIGSEGV',
+  'SIGUSR2',
+  'SIGPIPE',
+  'SIGALRM',
+  'SIGTERM',
+  'SIGCHLD',
+  'SIGCONT',
+  'SIGSTOP',
+  'SIGTSTP',
+  'SIGTTIN',
+  'SIGTTOU',
+]);
 
 export type CliParseResult =
   | { type: typeof CLI_PARSE_TYPES.HELP }
@@ -46,10 +68,13 @@ export function parseCliArgs(args: string[]): CliParseResult {
     } else if (arg === CLI_FLAGS.SIGNAL || arg === CLI_FLAGS.SIGNAL_SHORT) {
       const nextArg = args[i + 1];
       if (nextArg && !nextArg.startsWith('-')) {
-        if (!SIGNAL_PATTERN.test(nextArg)) {
+        const normalizedSignal = nextArg.toUpperCase().startsWith('SIG')
+          ? nextArg.toUpperCase()
+          : `SIG${nextArg.toUpperCase()}`;
+        if (!ALLOWED_SIGNALS.has(normalizedSignal)) {
           return { type: CLI_PARSE_TYPES.ERROR, message: CLI_ERRORS.INVALID_SIGNAL };
         }
-        options.signal = nextArg;
+        options.signal = normalizedSignal;
         i++;
       } else {
         return { type: CLI_PARSE_TYPES.ERROR, message: CLI_ERRORS.MISSING_SIGNAL };

@@ -86,4 +86,19 @@ describe('killSinglePort', () => {
     expect(result.message).toContain('Partial failure');
     expect(result.error).toBe('partial');
   });
+
+  it('throws for non-integer port values in programmatic API', () => {
+    expect(() => killSinglePort(3000.5)).toThrow(
+      'Invalid port number: 3000.5. Port must be an integer between 1 and 65535.'
+    );
+  });
+
+  it('throws for out-of-range port values in programmatic API', () => {
+    expect(() => killSinglePort(0)).toThrow(
+      'Invalid port number: 0. Port must be an integer between 1 and 65535.'
+    );
+    expect(() => killSinglePort(70000)).toThrow(
+      'Invalid port number: 70000. Port must be an integer between 1 and 65535.'
+    );
+  });
 });

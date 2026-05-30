@@ -91,7 +91,7 @@ export const COMMAND_BUILDER_OS_SUMMARIES = {
   linux:
     'Uses lsof lookup index. Carries a fuser socket parse fallback sequence to ensure failsafe execution across standard Alpine/Debian platforms.',
   windows:
-    'Queries Windows netstat columns, matches exact bound ports via Regex, and propagates a child process tree tear-down (/T /F).',
+    'Queries Windows netstat columns, parses exact bound ports numerically, and propagates a child process tree tear-down (/T /F).',
 } as const;
 
 export const COMMAND_BUILDER_SNIPPETS = {

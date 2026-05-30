@@ -87,7 +87,7 @@ const results = portKillSync(3000, {
 | Option    | Type                       | Default                | Notes                                                               |
 | --------- | -------------------------- | ---------------------- | ------------------------------------------------------------------- |
 | `force`   | `boolean`                  | `true`                 | POSIX: `SIGKILL`; Windows: adds `taskkill /F`.                      |
-| `signal`  | `string`                   | `SIGKILL` or `SIGTERM` | Only used on POSIX. If `force: false`, fallback is `SIGTERM`.       |
+| `signal`  | `string`                   | `SIGKILL` or `SIGTERM` | POSIX-only and restricted to standard supported `SIG*` names.       |
 | `verbose` | `boolean`                  | `false`                | Enables debug-level logs.                                           |
 | `dryRun`  | `boolean`                  | `false`                | Finds matching PIDs and returns success result without termination. |
 | `logger`  | `(message, level) => void` | `undefined`            | Receives raw message and level (`info`, `warn`, `error`, `debug`).  |
@@ -105,6 +105,10 @@ Each port returns:
 
 ## Notes
 
+- Programmatic API and CLI both enforce strict port validation (`1..65535`, integers only).
+- POSIX signal overrides are validated against a standard signal allowlist.
+- Command execution uses structured `{ binary, args }` spawning with `shell: false`.
+- The library automatically skips `process.pid` and `process.ppid` to avoid self/parent termination.
 - Requires system tools available in PATH:
   - POSIX: `lsof`, `fuser`, `kill`
   - Windows: `netstat`, `taskkill`

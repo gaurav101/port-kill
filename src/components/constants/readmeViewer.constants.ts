@@ -22,7 +22,7 @@ export const README_VIEWER_CONSTANTS = {
   cliHint: 'Run directly or through npx:',
   testHint: 'Call port cleanup in setup hooks to avoid flaky EADDRINUSE failures in watch mode:',
   architectureHint:
-    'Strategy implementations isolate platform behavior. Command factories build native shell commands, and runtime selection is based on process.platform.',
+    'Strategy implementations isolate platform behavior. Command factories build structured command objects, and runtime selection is based on process.platform.',
   contributionBody:
     'Fork the repository, keep changes scoped, validate build/type checks, and include clear PR notes.',
   featureCheck: '✓',
@@ -56,6 +56,11 @@ export const README_VIEWER_FEATURES = [
     title: 'Operational Controls',
     description:
       'Supports dry-run, verbose logs, force/no-force behavior, and custom logger hooks.',
+  },
+  {
+    title: 'Security Guardrails',
+    description:
+      'Validates integer ports (1..65535), restricts POSIX signals to a supported allowlist, and skips self/parent PIDs.',
   },
 ] as const;
 
@@ -106,7 +111,8 @@ export const README_VIEWER_API_ROWS = [
     option: 'signal',
     type: 'string',
     defaultValue: "'SIGKILL' / 'SIGTERM'",
-    description: 'POSIX-only signal override. If force is false, fallback signal is SIGTERM.',
+    description:
+      'POSIX-only signal override restricted to supported SIG* values. If force is false, fallback signal is SIGTERM.',
   },
   {
     option: 'verbose',

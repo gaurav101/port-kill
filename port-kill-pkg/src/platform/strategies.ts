@@ -63,14 +63,19 @@ export class UnixPortStrategy implements PlatformStrategy {
     const force = options.force !== false;
     const signal =
       options.signal || (force ? PLATFORM_RUNTIME.FORCE_SIGNAL : PLATFORM_RUNTIME.GRACEFUL_SIGNAL);
+    const safePids = filterProtectedPids(pids, log);
 
-    log(PLATFORM_MESSAGES.PREPARE_UNIX_SIGNAL(signal, pids), 'info');
+    if (safePids.length === 0) {
+      return { success: true, signal };
+    }
 
-    const killCmd = this.commandFactory.createKillCommand(pids, signal) as string;
+    log(PLATFORM_MESSAGES.PREPARE_UNIX_SIGNAL(signal, safePids), 'info');
+
+    const [killCmd] = this.commandFactory.createKillCommands(safePids, signal);
     const { success, error } = runCommand(killCmd, log);
 
     if (success) {
-      log(PLATFORM_MESSAGES.TERMINATED_UNIX(pids), 'info');
+      log(PLATFORM_MESSAGES.TERMINATED_UNIX(safePids), 'info');
       return { success: true, signal };
     }
 
@@ -109,8 +114,8 @@ export class WindowsPortStrategy implements PlatformStrategy {
 
       if (isNaN(pid)) continue;
 
-      const portMatch = new RegExp(`[:\\]]${port}$`);
-      if (portMatch.test(localAddress) && !pids.includes(pid)) {
+      const localPort = extractPortFromAddress(localAddress);
+      if (localPort === port && !pids.includes(pid)) {
         pids.push(pid);
       }
     }
@@ -121,13 +126,19 @@ export class WindowsPortStrategy implements PlatformStrategy {
 
   terminatePids(pids: number[], options: PortKillOptions, log: PortKillLog): TerminationResult {
     const force = options.force !== false;
-    log(PLATFORM_MESSAGES.PREPARE_WINDOWS(force, pids), 'info');
+    const safePids = filterProtectedPids(pids, log);
+
+    if (safePids.length === 0) {
+      return { success: true, error: undefined };
+    }
+
+    log(PLATFORM_MESSAGES.PREPARE_WINDOWS(force, safePids), 'info');
 
     let successCount = 0;
     const errors: string[] = [];
-    const killCommands = this.commandFactory.createKillCommand(pids, force) as string[];
+    const killCommands = this.commandFactory.createKillCommands(safePids, force);
 
-    pids.forEach((pid, index) => {
+    safePids.forEach((pid, index) => {
       const result = runCommand(killCommands[index], log);
 
       if (result.success) {
@@ -139,10 +150,30 @@ export class WindowsPortStrategy implements PlatformStrategy {
       }
     });
 
-    const allSucceeded = successCount === pids.length;
+    const allSucceeded = successCount === safePids.length;
     return {
       success: allSucceeded,
       error: allSucceeded ? undefined : errors.join('; '),
     };
   }
+}
+
+function extractPortFromAddress(localAddress: string): number | null {
+  const separatorIndex = localAddress.lastIndexOf(':');
+  if (separatorIndex === -1) return null;
+
+  const portPart = localAddress.slice(separatorIndex + 1).trim();
+  if (!/^\d+$/.test(portPart)) return null;
+
+  const port = Number(portPart);
+  return Number.isInteger(port) ? port : null;
+}
+
+function filterProtectedPids(pids: number[], log: PortKillLog): number[] {
+  const protectedPids = new Set([process.pid, process.ppid].filter((pid) => pid > 0));
+  return pids.filter((pid) => {
+    if (!protectedPids.has(pid)) return true;
+    log(`[port-kill] Skipping protected PID ${pid} to prevent self/parent termination.`, 'warn');
+    return false;
+  });
 }
