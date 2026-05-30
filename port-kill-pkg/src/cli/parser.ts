@@ -7,6 +7,10 @@ import { PortKillOptions } from '../types';
 import { CLI_ERRORS } from './messages';
 import { CLI_DEFAULT_OPTIONS, CLI_FLAGS, CLI_PARSE_TYPES } from './constants';
 
+const PORT_MIN = 1;
+const PORT_MAX = 65535;
+const SIGNAL_PATTERN = /^SIG?[A-Z]+$/i;
+
 export type CliParseResult =
   | { type: typeof CLI_PARSE_TYPES.HELP }
   | { type: typeof CLI_PARSE_TYPES.VERSION }
@@ -42,14 +46,20 @@ export function parseCliArgs(args: string[]): CliParseResult {
     } else if (arg === CLI_FLAGS.SIGNAL || arg === CLI_FLAGS.SIGNAL_SHORT) {
       const nextArg = args[i + 1];
       if (nextArg && !nextArg.startsWith('-')) {
+        if (!SIGNAL_PATTERN.test(nextArg)) {
+          return { type: CLI_PARSE_TYPES.ERROR, message: CLI_ERRORS.INVALID_SIGNAL };
+        }
         options.signal = nextArg;
         i++;
       } else {
         return { type: CLI_PARSE_TYPES.ERROR, message: CLI_ERRORS.MISSING_SIGNAL };
       }
     } else {
-      const port = parseInt(arg, 10);
-      if (isNaN(port)) {
+      if (!/^\d+$/.test(arg)) {
+        return { type: CLI_PARSE_TYPES.ERROR, message: CLI_ERRORS.invalidPortOrOption(arg) };
+      }
+      const port = Number(arg);
+      if (port < PORT_MIN || port > PORT_MAX) {
         return { type: CLI_PARSE_TYPES.ERROR, message: CLI_ERRORS.invalidPortOrOption(arg) };
       }
       ports.push(port);

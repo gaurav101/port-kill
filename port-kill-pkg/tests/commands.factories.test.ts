@@ -16,6 +16,11 @@ describe('command factories', () => {
     expect(factory.createKillCommand([3], 'INT')).toBe('kill -INT 3');
   });
 
+  it('rejects unsafe unix signal values', () => {
+    const factory = new UnixCommandFactory();
+    expect(() => factory.createKillCommand([1], 'SIGTERM;RM')).toThrow('Invalid signal value');
+  });
+
   it('builds windows commands with and without force', () => {
     const factory = new WindowsCommandFactory();
 

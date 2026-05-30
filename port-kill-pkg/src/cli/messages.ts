@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export const CLI_VERSION = 'port-kill v1.0.1';
+const packageMetadata = require('../../package.json') as { version?: string };
+const resolvedVersion = packageMetadata?.version || '0.0.0';
+
+export const CLI_VERSION = `port-kill v${resolvedVersion}`;
 
 export const CLI_HELP = `
   Usage: port-kill <ports...> [options]
@@ -27,6 +30,8 @@ export const CLI_HELP = `
 
 export const CLI_ERRORS = {
   MISSING_SIGNAL: 'Error: Please specify a signal name (e.g., SIGTERM, SIGINT) after --signal/-s.',
+  INVALID_SIGNAL:
+    'Error: Invalid signal value. Use standard signal names like SIGTERM, SIGINT, or SIGKILL.',
   NO_PORTS: 'Error: No target ports specified. Run "port-kill --help".',
   invalidPortOrOption: (arg: string) =>
     `Error: Invalid port or option "${arg}". Run 'port-kill --help' for details.`,

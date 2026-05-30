@@ -26,12 +26,15 @@ export class UnixCommandFactory implements PlatformCommandFactory {
 
 function normalizeUnixSignal(signal: string): string {
   const normalizedSignal = signal.trim().toUpperCase();
+  const sanitizedSignal = normalizedSignal.startsWith(COMMAND_ARGUMENTS.POSIX_SIGNAL_PREFIX)
+    ? normalizedSignal.slice(COMMAND_ARGUMENTS.POSIX_SIGNAL_PREFIX.length)
+    : normalizedSignal;
 
-  if (normalizedSignal.startsWith(COMMAND_ARGUMENTS.POSIX_SIGNAL_PREFIX)) {
-    return normalizedSignal.slice(COMMAND_ARGUMENTS.POSIX_SIGNAL_PREFIX.length);
+  if (!/^[A-Z]+$/.test(sanitizedSignal)) {
+    throw new Error(`Invalid signal value "${signal}".`);
   }
 
-  return normalizedSignal;
+  return sanitizedSignal;
 }
 
 export class WindowsCommandFactory implements PlatformCommandFactory {

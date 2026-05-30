@@ -37,6 +37,11 @@ describe('runCommand', () => {
       success: true,
     });
     expect(mockedBuildFailure).not.toHaveBeenCalled();
+    expect(mockedSpawnSync).toHaveBeenCalledWith(
+      'echo',
+      ['hello'],
+      expect.objectContaining({ shell: false })
+    );
   });
 
   it('returns failure and diagnostic message for non-zero exit code', () => {
@@ -76,5 +81,13 @@ describe('runCommand', () => {
       stderr: '',
       error: 'spawn failed',
     });
+  });
+
+  it('refuses unsafe command patterns before spawning', () => {
+    const result = runCommand('echo hello; rm -rf /', log);
+
+    expect(result.success).toBe(false);
+    expect(mockedSpawnSync).not.toHaveBeenCalled();
+    expect(result.error).toBe('mocked-failure');
   });
 });

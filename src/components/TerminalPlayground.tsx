@@ -30,6 +30,12 @@ export default function TerminalPlayground() {
   const [logs, setLogs] = useState<LogLine[]>([]);
   const terminalPanelRef = useRef<HTMLDivElement>(null);
   const terminalViewportRef = useRef<HTMLDivElement>(null);
+  const timerIdsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  const clearSimulationTimers = () => {
+    timerIdsRef.current.forEach((timerId) => clearTimeout(timerId));
+    timerIdsRef.current = [];
+  };
 
   useEffect(() => {
     if (terminalViewportRef.current) {
@@ -40,10 +46,18 @@ export default function TerminalPlayground() {
     }
   }, [logs]);
 
+  useEffect(
+    () => () => {
+      clearSimulationTimers();
+    },
+    []
+  );
+
   const runSimulation = () => {
     if (running) return;
 
     terminalPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    clearSimulationTimers();
 
     setRunning(true);
     setLogs([]);
@@ -169,12 +183,13 @@ export default function TerminalPlayground() {
     });
 
     sequence.forEach((line) => {
-      setTimeout(() => {
+      const timerId = setTimeout(() => {
         setLogs((prev) => [...prev, { text: line.text, type: line.type }]);
         if (line.text.startsWith(TERMINAL_CONTENT.successPrefix)) {
           setRunning(false);
         }
       }, line.delay);
+      timerIdsRef.current.push(timerId);
     });
   };
 

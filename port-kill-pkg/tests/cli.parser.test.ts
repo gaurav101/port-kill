@@ -27,6 +27,24 @@ describe('parseCliArgs', () => {
     }
   });
 
+  it('rejects partial and out-of-range ports', () => {
+    const partial = parseCliArgs(['3000abc']);
+    const outOfRangeLow = parseCliArgs(['0']);
+    const outOfRangeHigh = parseCliArgs(['65536']);
+
+    expect(partial.type).toBe('error');
+    expect(outOfRangeLow.type).toBe('error');
+    expect(outOfRangeHigh.type).toBe('error');
+  });
+
+  it('rejects invalid signal token format', () => {
+    const result = parseCliArgs(['3000', '--signal', 'SIGTERM;rm']);
+    expect(result.type).toBe('error');
+    if (result.type === 'error') {
+      expect(result.message).toContain('Invalid signal value');
+    }
+  });
+
   it('returns parsed run payload for mixed options', () => {
     const result = parseCliArgs([
       '3000',

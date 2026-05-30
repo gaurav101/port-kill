@@ -23,8 +23,18 @@ export interface CommandRunResult {
 export function runCommand(command: string, log: PortKillLog): CommandRunResult {
   log(COMMAND_RUNNER_MESSAGES.EXECUTING(command), COMMAND_RUNNER_CONSTANTS.DEBUG_LOG_LEVEL);
 
-  const result = spawnSync(command, {
-    shell: true,
+  const parsedCommand = parseCommand(command);
+  if (!parsedCommand) {
+    const error = buildCommandFailureMessage({
+      command,
+      error: 'Unsafe or invalid command format detected. Refusing to execute through shell parser.',
+    });
+    log(COMMAND_RUNNER_MESSAGES.COMMAND_FAILURE(error), COMMAND_RUNNER_CONSTANTS.DEBUG_LOG_LEVEL);
+    return { stdout: '', success: false, error, stderr: '', status: null };
+  }
+
+  const result = spawnSync(parsedCommand.binary, parsedCommand.args, {
+    shell: false,
     encoding: COMMAND_RUNNER_CONSTANTS.ENCODING,
     stdio: [
       COMMAND_RUNNER_CONSTANTS.STDIO_PIPE,
@@ -49,4 +59,23 @@ export function runCommand(command: string, log: PortKillLog): CommandRunResult 
 
   log(COMMAND_RUNNER_MESSAGES.COMMAND_FAILURE(error), COMMAND_RUNNER_CONSTANTS.DEBUG_LOG_LEVEL);
   return { stdout, success: false, error, stderr, status: result.status };
+}
+
+interface ParsedCommand {
+  binary: string;
+  args: string[];
+}
+
+function parseCommand(command: string): ParsedCommand | null {
+  const trimmed = command.trim();
+  if (!trimmed) return null;
+  if (/[;&|`$><]/.test(trimmed)) return null;
+
+  const parts = trimmed.split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return null;
+
+  return {
+    binary: parts[0],
+    args: parts.slice(1),
+  };
 }

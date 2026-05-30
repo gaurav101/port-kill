@@ -87,7 +87,7 @@ export default function App() {
         </div>
       </main>
 
-      {/* 🛡️ Aesthetic Integrity Footer */}
+      {/*  Aesthetic Integrity Footer */}
       <footer className="mt-16 border-t border-gray-100 pt-8 px-6 text-center select-none text-gray-450 text-[11px] text-gray-400">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-1.5 font-mono text-gray-400">
