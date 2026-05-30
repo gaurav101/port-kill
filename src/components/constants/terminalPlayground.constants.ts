@@ -10,6 +10,7 @@ export type TerminalPlatform = 'unix' | 'windows';
 export interface TerminalPreset {
   name: string;
   cmd: string;
+  ports: number[];
   pids: number[];
   verbose: boolean;
   dryRun: boolean;
@@ -53,6 +54,7 @@ export const TERMINAL_PRESETS: Record<string, TerminalPreset> = {
   standard: {
     name: 'Standard Single Target (Port 3000)',
     cmd: 'port-kill 3000',
+    ports: [3000],
     pids: [18451],
     verbose: false,
     dryRun: false,
@@ -62,6 +64,7 @@ export const TERMINAL_PRESETS: Record<string, TerminalPreset> = {
   verboseMultiple: {
     name: 'Verbose Multi-Target (Ports 8080 or 8081)',
     cmd: 'port-kill 8080 8081 --verbose',
+    ports: [8080, 8081],
     pids: [29541, 29542],
     verbose: true,
     dryRun: false,
@@ -71,6 +74,7 @@ export const TERMINAL_PRESETS: Record<string, TerminalPreset> = {
   dryAudit: {
     name: 'Safe Dry-Run Audit (Port 5000)',
     cmd: 'port-kill 5000 --dry-run',
+    ports: [5000],
     pids: [91244],
     verbose: true,
     dryRun: true,
@@ -80,6 +84,7 @@ export const TERMINAL_PRESETS: Record<string, TerminalPreset> = {
   graceful: {
     name: 'Graceful Termination (Port 8000)',
     cmd: 'port-kill 8000 --no-force --signal SIGTERM',
+    ports: [8000],
     pids: [412],
     verbose: false,
     dryRun: false,
@@ -115,31 +120,27 @@ export const TERMINAL_CONTENT = {
 } as const;
 
 export const TERMINAL_LOG_MESSAGES = {
-  initiating: '[port-kill] [INFO] Initiating port-kill routine...',
-  optionsParsed: (payload: string) => `[port-kill] [DEBUG] Options parsed: ${payload}`,
-  windowsLookup: '[port-kill] [DEBUG] Executing Windows system lookup: "netstat -ano"',
-  windowsLookupResult:
-    '[port-kill] [DEBUG] Netstat parser discovered matching ports with target sockets.',
-  unixLookup: (port: string) =>
-    `[port-kill] [DEBUG] Executing POSIX platform lookup: "lsof -t -n -i :${port}"`,
-  discoveredPids: (pids: number[]) =>
-    `[port-kill] [INFO] Discovered active process tree: PIDs [${pids.join(', ')}]`,
-  dryRunChecked: (pids: number[]) =>
-    `[port-kill] [INFO] [DRY_RUN] Checked active process tree [${pids.join(', ')}] without executing kill signals.`,
-  dryRunComplete: (pids: number[]) =>
-    `✓ [Port Audit Complete] Probed PIDs [${pids.join(', ')}] successfully (Dry mode).`,
-  prepareWindows: (pid: number, force: boolean) =>
-    `[port-kill] [INFO] Preparing to terminate Windows process ${pid}. Force: ${force}`,
-  runWindowsKill: (pid: number, force: boolean) =>
-    `[port-kill] [DEBUG] Executing command: "taskkill ${force ? '/F' : ''} /T /PID ${pid}"`,
-  windowsTerminated: (pid: number) =>
-    `[port-kill] [INFO] Windows process tree ${pid} terminated with success.`,
+  targetingPorts: (ports: number[]) => `[port-kill] Targeting ports: [${ports.join(', ')}]`,
+  optionsConfigured: (payload: string) => `[port-kill] Options configured: ${payload}`,
+  initiating: (port: number) =>
+    `[port-kill] [INFO] Initiating port-kill routine for port: ${port}...`,
+  commandRun: (command: string) => `[port-kill] [DEBUG] Executing command: ${command}`,
+  lsofFound: (port: number, pids: number[]) =>
+    `[port-kill] [DEBUG] lsof found PIDs on port ${port}: [${pids.join(', ')}]`,
+  netstatFound: (port: number, pids: number[]) =>
+    `[port-kill] [DEBUG] netstat identified PIDs on Windows port ${port}: [${pids.join(', ')}]`,
+  discoveredPids: (port: number, pids: number[]) =>
+    `[port-kill] [INFO] Discovered active processes on port ${port}: PIDs [${pids.join(', ')}]`,
+  dryRun: (port: number, pids: number[]) =>
+    `[port-kill] [INFO] [DRY_RUN] Discovered active process tree [${pids.join(', ')}] on port ${port}. No kill signal sent.`,
+  prepareWindows: (force: boolean, pids: number[]) =>
+    `[port-kill] [INFO] Preparing to terminate Windows processes. Force: ${force}, PIDs: [${pids.join(', ')}]`,
   prepareUnix: (signal: string, pids: number[]) =>
     `[port-kill] [INFO] Preparing to send signal ${signal} to PIDs: [${pids.join(', ')}]`,
-  runUnixKill: (signal: string, pids: number[]) =>
-    `[port-kill] [DEBUG] Executing command: "kill -${signal} ${pids.join(' ')}"`,
+  windowsTerminated: (pid: number) =>
+    `[port-kill] [INFO] Windows process ${pid} (and its child processes) terminated.`,
   unixTerminated: (pids: number[]) =>
-    `[port-kill] [INFO] Processes [${pids.join(', ')}] terminated via native signal successfully.`,
-  finalSuccess:
-    '✓ [Port Clearance Success] All sockets on targeted port(s) have been successfully released.',
+    `[port-kill] [INFO] Processes [${pids.join(', ')}] terminated successfully.`,
+  finalKilled: (port: number, pids: number[]) =>
+    `✓ [Port ${port}] Process tree killed: [${pids.join(', ')}].`,
 } as const;

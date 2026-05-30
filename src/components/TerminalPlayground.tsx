@@ -65,6 +65,7 @@ export default function TerminalPlayground() {
     const preset = TERMINAL_PRESETS[selectedPreset];
     const isWindows = selectedPlatform === TERMINAL_KEYS.WINDOWS;
     const activePids = preset.pids;
+    const targetPort = preset.ports[0] ?? Number(TERMINAL_CONSTANTS.fallbackLookupPort);
 
     const sequence: Array<{ text: string; type: TerminalLogType; delay: number }> = [
       {
@@ -73,7 +74,7 @@ export default function TerminalPlayground() {
         delay: TERMINAL_CONSTANTS.copyRuntimeDelayStartMs,
       },
       {
-        text: TERMINAL_LOG_MESSAGES.initiating,
+        text: TERMINAL_LOG_MESSAGES.initiating(targetPort),
         type: TERMINAL_KEYS.LOG_INFO,
         delay: TERMINAL_CONSTANTS.infoDelayStartMs,
       },
@@ -81,7 +82,12 @@ export default function TerminalPlayground() {
 
     if (preset.verbose) {
       sequence.push({
-        text: TERMINAL_LOG_MESSAGES.optionsParsed(
+        text: TERMINAL_LOG_MESSAGES.targetingPorts(preset.ports),
+        type: TERMINAL_KEYS.LOG_INFO,
+        delay: TERMINAL_CONSTANTS.debugDelayOptionsMs,
+      });
+      sequence.push({
+        text: TERMINAL_LOG_MESSAGES.optionsConfigured(
           JSON.stringify(
             {
               force: preset.force,
@@ -93,61 +99,64 @@ export default function TerminalPlayground() {
             2
           )
         ),
-        type: TERMINAL_KEYS.LOG_DEBUG,
-        delay: TERMINAL_CONSTANTS.debugDelayOptionsMs,
+        type: TERMINAL_KEYS.LOG_INFO,
+        delay: TERMINAL_CONSTANTS.debugDelayOptionsMs + 220,
       });
     }
 
-    if (isWindows) {
+    if (preset.verbose && isWindows) {
       sequence.push({
-        text: TERMINAL_LOG_MESSAGES.windowsLookup,
+        text: TERMINAL_LOG_MESSAGES.commandRun('netstat -ano'),
         type: TERMINAL_KEYS.LOG_DEBUG,
         delay: TERMINAL_CONSTANTS.debugDelayLookupMs,
       });
       sequence.push({
-        text: TERMINAL_LOG_MESSAGES.windowsLookupResult,
+        text: TERMINAL_LOG_MESSAGES.netstatFound(targetPort, activePids),
         type: TERMINAL_KEYS.LOG_DEBUG,
         delay: TERMINAL_CONSTANTS.debugDelayLookupResultMs,
       });
-    } else {
-      const matchedPort = preset.cmd.match(/\d+/)?.[0] ?? TERMINAL_CONSTANTS.fallbackLookupPort;
+    } else if (preset.verbose) {
       sequence.push({
-        text: TERMINAL_LOG_MESSAGES.unixLookup(matchedPort),
+        text: TERMINAL_LOG_MESSAGES.commandRun(`lsof -t -n -i :${targetPort}`),
         type: TERMINAL_KEYS.LOG_DEBUG,
         delay: TERMINAL_CONSTANTS.debugDelayLookupMs,
+      });
+      sequence.push({
+        text: TERMINAL_LOG_MESSAGES.lsofFound(targetPort, activePids),
+        type: TERMINAL_KEYS.LOG_DEBUG,
+        delay: TERMINAL_CONSTANTS.debugDelayLookupResultMs,
       });
     }
 
     sequence.push({
-      text: TERMINAL_LOG_MESSAGES.discoveredPids(activePids),
+      text: TERMINAL_LOG_MESSAGES.discoveredPids(targetPort, activePids),
       type: TERMINAL_KEYS.LOG_INFO,
       delay: TERMINAL_CONSTANTS.discoveredPidDelayMs,
     });
 
     if (preset.dryRun) {
       sequence.push({
-        text: TERMINAL_LOG_MESSAGES.dryRunChecked(activePids),
-        type: TERMINAL_KEYS.LOG_SUCCESS,
+        text: TERMINAL_LOG_MESSAGES.dryRun(targetPort, activePids),
+        type: TERMINAL_KEYS.LOG_INFO,
         delay: TERMINAL_CONSTANTS.dryRunCheckedDelayMs,
       });
-      sequence.push({
-        text: TERMINAL_LOG_MESSAGES.dryRunComplete(activePids),
-        type: TERMINAL_KEYS.LOG_SUCCESS,
-        delay: TERMINAL_CONSTANTS.dryRunCompleteDelayMs,
-      });
     } else if (isWindows) {
+      sequence.push({
+        text: TERMINAL_LOG_MESSAGES.prepareWindows(preset.force, activePids),
+        type: TERMINAL_KEYS.LOG_INFO,
+        delay: TERMINAL_CONSTANTS.killStartDelayMs,
+      });
       activePids.forEach((pid, index) => {
         const stepOffset = index * TERMINAL_CONSTANTS.killWindowsDelayStepMs;
-        sequence.push({
-          text: TERMINAL_LOG_MESSAGES.prepareWindows(pid, preset.force),
-          type: TERMINAL_KEYS.LOG_INFO,
-          delay: TERMINAL_CONSTANTS.killStartDelayMs + stepOffset,
-        });
-        sequence.push({
-          text: TERMINAL_LOG_MESSAGES.runWindowsKill(pid, preset.force),
-          type: TERMINAL_KEYS.LOG_DEBUG,
-          delay: TERMINAL_CONSTANTS.killDebugDelayMs + stepOffset,
-        });
+        if (preset.verbose) {
+          sequence.push({
+            text: TERMINAL_LOG_MESSAGES.commandRun(
+              `taskkill ${preset.force ? '/F ' : ''}/T /PID ${pid}`.trim()
+            ),
+            type: TERMINAL_KEYS.LOG_DEBUG,
+            delay: TERMINAL_CONSTANTS.killDebugDelayMs + stepOffset,
+          });
+        }
         sequence.push({
           text: TERMINAL_LOG_MESSAGES.windowsTerminated(pid),
           type: TERMINAL_KEYS.LOG_INFO,
@@ -156,19 +165,18 @@ export default function TerminalPlayground() {
       });
     } else {
       const selectedSignal = preset.force ? TERMINAL_CONSTANTS.defaultForceSignal : preset.signal;
-      const shellSignal = selectedSignal.startsWith(TERMINAL_KEYS.SIG_PREFIX)
-        ? selectedSignal.slice(TERMINAL_KEYS.SIG_PREFIX.length)
-        : selectedSignal;
       sequence.push({
         text: TERMINAL_LOG_MESSAGES.prepareUnix(selectedSignal, activePids),
         type: TERMINAL_KEYS.LOG_INFO,
         delay: TERMINAL_CONSTANTS.killStartDelayMs,
       });
-      sequence.push({
-        text: TERMINAL_LOG_MESSAGES.runUnixKill(shellSignal, activePids),
-        type: TERMINAL_KEYS.LOG_DEBUG,
-        delay: TERMINAL_CONSTANTS.killDebugDelayMs,
-      });
+      if (preset.verbose) {
+        sequence.push({
+          text: TERMINAL_LOG_MESSAGES.commandRun(`kill -${selectedSignal} ${activePids.join(' ')}`),
+          type: TERMINAL_KEYS.LOG_DEBUG,
+          delay: TERMINAL_CONSTANTS.killDebugDelayMs,
+        });
+      }
       sequence.push({
         text: TERMINAL_LOG_MESSAGES.unixTerminated(activePids),
         type: TERMINAL_KEYS.LOG_INFO,
@@ -177,9 +185,11 @@ export default function TerminalPlayground() {
     }
 
     sequence.push({
-      text: TERMINAL_LOG_MESSAGES.finalSuccess,
+      text: TERMINAL_LOG_MESSAGES.finalKilled(targetPort, activePids),
       type: TERMINAL_KEYS.LOG_SUCCESS,
-      delay: TERMINAL_CONSTANTS.finalSuccessDelayMs,
+      delay: preset.dryRun
+        ? TERMINAL_CONSTANTS.dryRunCompleteDelayMs
+        : TERMINAL_CONSTANTS.finalSuccessDelayMs,
     });
 
     sequence.forEach((line) => {
