@@ -9,9 +9,13 @@ export const README_VIEWER_CONSTANTS = {
   description:
     'Lightweight cross-platform port termination for Node.js with programmatic APIs and a CLI, backed by zero runtime dependencies.',
   keyAdvantagesTitle: 'Key Highlights',
+  intendedUsageTitle: 'Intended Usage',
+  intendedUsageBody:
+    'Built for Node.js and frontend development workflows such as local port cleanup, test setup/teardown, and CI port-reset steps. Not intended as production process orchestration.',
   installationTitle: 'Installation',
   directCliTitle: 'CLI Quick Start',
   testingTitle: 'Test Setup (Jest/Mocha)',
+  securityNotesTitle: 'Security Notes',
   apiOptionsTitle: 'API Options',
   architectureTitle: 'Architecture',
   contributionTitle: 'Contribution Guide',
@@ -131,6 +135,29 @@ export const README_VIEWER_API_ROWS = [
     type: '(message, level) => void',
     defaultValue: 'undefined',
     description: 'Custom callback for log routing. Receives level as info/warn/error/debug.',
+  },
+] as const;
+
+export const README_VIEWER_SECURITY_NOTES = [
+  {
+    title: 'TOCTOU / PID Recycling',
+    description:
+      'PID lookup and process termination happen in separate steps, so a small race window can exist on highly volatile systems.',
+  },
+  {
+    title: 'PATH Trust Assumption',
+    description:
+      'System tools are resolved from PATH (`lsof`, `fuser`, `netstat`, `kill`, `taskkill`). Prefer trusted environments and avoid elevated execution unless required.',
+  },
+  {
+    title: 'EDR / Enterprise Allowlists',
+    description:
+      'Frequent socket queries followed by process termination can be flagged by endpoint security tools; configure allowlists for trusted CI runners when needed.',
+  },
+  {
+    title: 'Runtime Behavior Stability',
+    description:
+      'Runtime behavior remains intentionally unchanged to preserve DX and zero-runtime-dependency simplicity.',
   },
 ] as const;
 

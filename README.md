@@ -103,6 +103,23 @@ Each port returns:
 - `error?: string`
 - `timestamp: string`
 
+## Intended Usage
+
+This project is intended for **Node.js and frontend development workflows**, including:
+
+- Local dev server port cleanup.
+- Test setup/teardown helpers.
+- CI pipeline port-reset steps.
+
+It is **not intended to be a production process-orchestration utility** or a standalone host administration tool.
+
+## Security Notes
+
+- **TOCTOU / PID recycling:** like other OS wrapper tools, PID lookup and kill happen in separate steps, so a small race window exists on very high-churn hosts.
+- **PATH trust assumption:** system binaries (`lsof`, `fuser`, `netstat`, `kill`, `taskkill`) are resolved from the environment. Use trusted runtimes and avoid elevated execution (`sudo` / Administrator) unless required.
+- **EDR / allowlist context:** repeated socket lookup + process termination patterns can trigger enterprise endpoint alerts; configure allowlists for trusted CI runners where needed.
+- **Behavior stability:** runtime behavior remains intentionally unchanged to preserve developer experience and zero-runtime-dependency simplicity.
+
 ## Notes
 
 - Programmatic API and CLI both enforce strict port validation (`1..65535`, integers only).

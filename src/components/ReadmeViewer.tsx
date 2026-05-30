@@ -22,6 +22,7 @@ import {
   README_VIEWER_CLI_EXAMPLES,
   README_VIEWER_CONSTANTS,
   README_VIEWER_FEATURES,
+  README_VIEWER_SECURITY_NOTES,
   README_VIEWER_INSTALL_SNIPPETS,
   README_VIEWER_TEST_SNIPPET,
 } from './constants/readmeViewer.constants';
@@ -81,6 +82,16 @@ export default function ReadmeViewer() {
 
       <div className="space-y-3 pt-2 font-sans">
         <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+          <ShieldCheck className="w-5 h-5 text-blue-600" />
+          {README_VIEWER_CONSTANTS.intendedUsageTitle}
+        </h3>
+        <p className="text-xs text-slate-600 leading-relaxed">
+          {README_VIEWER_CONSTANTS.intendedUsageBody}
+        </p>
+      </div>
+
+      <div className="space-y-3 pt-2 font-sans">
+        <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
           <Terminal className="w-5 h-5 text-blue-600" />
           {README_VIEWER_CONSTANTS.installationTitle}
         </h3>
@@ -120,6 +131,24 @@ export default function ReadmeViewer() {
             <div key={item.command}>
               <span className="text-gray-500 block">{item.description}</span>
               <span>{item.command}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="space-y-4 pt-2 font-sans">
+        <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+          <ShieldCheck className="w-5 h-5 text-blue-600" />
+          {README_VIEWER_CONSTANTS.securityNotesTitle}
+        </h3>
+        <div className="space-y-2">
+          {README_VIEWER_SECURITY_NOTES.map((item) => (
+            <div
+              key={item.title}
+              className="bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs leading-relaxed"
+            >
+              <span className="font-semibold text-slate-800">{item.title}: </span>
+              <span className="text-slate-600">{item.description}</span>
             </div>
           ))}
         </div>
