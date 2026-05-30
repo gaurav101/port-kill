@@ -44,6 +44,9 @@ export const COMMAND_BUILDER_SIGNALS = [
 ] as const;
 
 export const COMMAND_BUILDER_CONTENT = {
+  demoTitle: 'Terminal Demo',
+  demoNote:
+    'This walkthrough shows a real command run that detects PIDs on a busy port and clears them. Use this flow when local dev servers, test watchers, or CI jobs fail because a port is already in use.',
   interactiveBuilder: 'Interactive Builder',
   targetPorts: 'Target Ports',
   separatorHint: 'Space/comma separated',

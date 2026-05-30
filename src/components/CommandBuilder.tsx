@@ -16,6 +16,7 @@ import {
   COMMAND_BUILDER_SNIPPETS,
   COMMAND_BUILDER_VALUES,
 } from './constants/commandBuilder.constants';
+import terminalDemoVideo from '../../assets/terminal-demo.mp4';
 
 export default function CommandBuilder() {
   const [portInputs, setPortInputs] = useState<string>(COMMAND_BUILDER_DEFAULTS.portInput);
@@ -312,6 +313,25 @@ export default function CommandBuilder() {
             </p>
           </div>
         </div>
+
+        <section className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-5 space-y-3">
+          <div>
+            <h3 className="text-sm font-semibold text-slate-900 tracking-tight">
+              {COMMAND_BUILDER_CONTENT.demoTitle}
+            </h3>
+            <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+              {COMMAND_BUILDER_CONTENT.demoNote}
+            </p>
+          </div>
+          <video
+            className="w-full rounded-lg border border-slate-200 bg-black"
+            src={terminalDemoVideo}
+            controls
+            muted
+            playsInline
+            preload="metadata"
+          />
+        </section>
       </div>
 
       <div className="lg:col-span-7 space-y-6">
