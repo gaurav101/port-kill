@@ -15,6 +15,7 @@ import {
   TerminalLogType,
   TerminalPlatform,
 } from './constants/terminalPlayground.constants';
+import { getTerminalLogColorClass } from './utils/terminalPlayground.utils';
 
 interface LogLine {
   text: string;
@@ -349,28 +350,13 @@ export default function TerminalPlayground() {
 
           <AnimatePresence>
             {logs.map((log, index) => {
-              let colorClass = 'text-gray-200';
-              if (log.type === TERMINAL_KEYS.LOG_CMD) {
-                colorClass = 'text-gray-300 font-bold border-b border-gray-900 pb-1 mb-2 block';
-              } else if (log.type === TERMINAL_KEYS.LOG_DEBUG) {
-                colorClass = 'text-gray-500';
-              } else if (log.type === TERMINAL_KEYS.LOG_INFO) {
-                colorClass = 'text-sky-400';
-              } else if (log.type === TERMINAL_KEYS.LOG_WARN) {
-                colorClass = 'text-amber-400';
-              } else if (log.type === TERMINAL_KEYS.LOG_ERROR) {
-                colorClass = 'text-rose-400';
-              } else if (log.type === TERMINAL_KEYS.LOG_SUCCESS) {
-                colorClass = 'text-blue-400 font-semibold';
-              }
-
               return (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, x: -4 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.15 }}
-                  className={`whitespace-pre-wrap ${colorClass}`}
+                  className={`whitespace-pre-wrap ${getTerminalLogColorClass(log.type)}`}
                 >
                   {log.text}
                 </motion.div>

@@ -18,9 +18,9 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@gks101/localyx": "^1.0.2",
     "@monaco-editor/react": "^4.7.0",
     "@tailwindcss/vite": "^4.1.14",
-    "@gks101/localyx": "^1.0.2",
     "@vitejs/plugin-react": "^5.0.4",
     "lucide-react": "^0.546.0",
     "monaco-editor": "^0.55.1",
@@ -37,6 +37,7 @@
     "@types/node": "^22.14.0",
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
+    "@vitest/coverage-v8": "^4.1.7",
     "autoprefixer": "^10.4.21",
     "esbuild": "^0.25.0",
     "eslint": "^10.4.0",
