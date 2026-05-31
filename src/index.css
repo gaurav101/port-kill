@@ -206,6 +206,17 @@ html.dark {
   border-color: #475569 !important;
 }
 
+/* Targeted dark-mode fixes: Under-the-Hood native shell command chips */
+.theme-dark .cb-native-label {
+  color: #94a3b8 !important;
+}
+
+.theme-dark .cb-native-command {
+  color: #e2e8f0 !important;
+  background-color: rgba(30, 41, 59, 0.92) !important;
+  border: 1px solid #334155 !important;
+}
+
 /* Targeted dark-mode fixes: Code Explorer file rail */
 .theme-dark .ce-file-rail {
   background-color: #0f172a !important;

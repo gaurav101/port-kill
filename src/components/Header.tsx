@@ -12,7 +12,7 @@ import {
   Sparkles,
   Star,
   ExternalLink,
-  Shield,
+  ShieldCheck,
   Sun,
   Moon,
 } from 'lucide-react';
@@ -116,16 +116,18 @@ export default function Header({ theme, onToggleTheme }: HeaderProps) {
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                   {/* Left Side: Header metadata and badges */}
                   <div className="space-y-2">
-                    <div className="flex items-center gap-2.5">
-                      <span className="bg-slate-100 text-slate-800 px-2.5 py-1 rounded text-xs font-mono font-semibold tracking-wider border border-slate-200 uppercase">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="bg-slate-100 text-slate-800 px-2 py-1 rounded text-[11px] sm:text-xs font-mono font-semibold tracking-wide border border-slate-200 uppercase whitespace-nowrap">
                         {HEADER_CONTENT.releaseTag}
                       </span>
-                      <div className="flex items-center gap-1 text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100 font-semibold">
-                        <Sparkles className="w-3.5 h-3.5" />
-                        <span>{HEADER_CONTENT.zeroDepsTag}</span>
+                      <div className="inline-flex items-center gap-1 text-[11px] sm:text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100 font-semibold min-w-0">
+                        <Sparkles className="w-3.5 h-3.5 shrink-0" />
+                        <span className="leading-tight break-words">
+                          {HEADER_CONTENT.zeroDepsTag}
+                        </span>
                       </div>
-                      <div className="flex items-center gap-1 text-xs text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 font-semibold">
-                        <Shield className="w-3.5 h-3.5" />
+                      <div className="inline-flex items-center gap-1 text-[11px] sm:text-xs text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 font-semibold whitespace-nowrap">
+                        <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
                         <span>{HEADER_CONTENT.secureTag}</span>
                       </div>
                     </div>

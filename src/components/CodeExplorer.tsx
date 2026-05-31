@@ -40,9 +40,9 @@ export default function CodeExplorer() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch min-h-[500px]">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-stretch min-h-[500px]">
       {/* LEFT: File Selector Rail */}
-      <div className="ce-file-rail lg:col-span-4 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4 flex flex-col justify-between">
+      <div className="order-2 lg:order-1 ce-file-rail lg:col-span-4 bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm space-y-4 flex flex-col justify-between">
         <div className="space-y-4">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3.5">
             <Layers className="w-4 h-4 text-blue-600" />
@@ -55,7 +55,7 @@ export default function CodeExplorer() {
             {CODE_EXPLORER_CONSTANTS.workspaceDescription}
           </p>
 
-          <div className="space-y-1.5 overflow-y-auto max-h-[380px] pr-1">
+          <div className="space-y-1.5 overflow-y-auto max-h-[240px] sm:max-h-[320px] lg:max-h-[380px] pr-1">
             {LIBRARY_FILES.map((file, idx) => {
               const isActive = activeFileIdx === idx;
               return (
@@ -81,22 +81,22 @@ export default function CodeExplorer() {
         </div>
 
         {/* Maintainability Specs Block */}
-        <div className="ce-metrics bg-blue-50/30 rounded-xl p-4 border border-blue-100/50 space-y-2 mt-4 lg:mt-0 font-sans">
-          <div className="ce-metrics-title flex items-center gap-1.5 text-xs font-semibold text-blue-800">
+        <div className="ce-metrics bg-blue-50/30 rounded-xl p-4 border border-blue-100/50 space-y-2.5 mt-4 lg:mt-0 font-sans">
+          <div className="ce-metrics-title flex items-center gap-1.5 text-xs font-semibold text-blue-800 leading-snug">
             <Activity className="w-3.5 h-3.5" />
             <span>{CODE_EXPLORER_CONSTANTS.metricsTitle}</span>
           </div>
-          <div className="ce-metrics-items grid grid-cols-2 gap-2 text-[10px] text-blue-700 font-mono">
-            <div>{CODE_EXPLORER_CONSTANTS.metricZeroDeps}</div>
-            <div>{CODE_EXPLORER_CONSTANTS.metricCoreLines}</div>
-            <div>{CODE_EXPLORER_CONSTANTS.metricPosix}</div>
-            <div>{CODE_EXPLORER_CONSTANTS.metricWindows}</div>
+          <div className="ce-metrics-items grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[11px] sm:text-[10px] text-blue-700 font-mono leading-relaxed">
+            <div className="break-words">{CODE_EXPLORER_CONSTANTS.metricZeroDeps}</div>
+            <div className="break-words">{CODE_EXPLORER_CONSTANTS.metricCoreLines}</div>
+            <div className="break-words">{CODE_EXPLORER_CONSTANTS.metricPosix}</div>
+            <div className="break-words">{CODE_EXPLORER_CONSTANTS.metricWindows}</div>
           </div>
         </div>
       </div>
 
       {/* RIGHT: High Fidelity Code Editor Viewer */}
-      <div className="lg:col-span-8 bg-slate-950 rounded-2xl border border-slate-900 overflow-hidden shadow-xl flex flex-col">
+      <div className="order-1 lg:order-2 lg:col-span-8 bg-slate-950 rounded-2xl border border-slate-900 overflow-hidden shadow-xl flex flex-col min-h-[360px] sm:min-h-[440px]">
         {/* Editor Tab Header */}
         <div className="flex items-center justify-between bg-slate-950 px-5 py-3 border-b border-slate-900 select-none">
           <div className="flex items-center gap-2.5">
@@ -137,7 +137,7 @@ export default function CodeExplorer() {
         </div>
 
         {/* Code Content Box */}
-        <div className="bg-slate-950/98 flex-1 min-h-0">
+        <div className="bg-slate-950/98 h-[240px] sm:h-[320px] lg:h-auto lg:flex-1 lg:min-h-0">
           <Editor
             path={activeFile.path}
             value={activeFile.content || CODE_EXPLORER_CONSTANTS.emptyCodeLine}

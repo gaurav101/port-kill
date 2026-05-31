@@ -492,20 +492,20 @@ export default function CommandBuilder() {
                 </p>
               </div>
               <div className="mt-4 pt-3 border-t border-gray-200/50 font-mono text-[10px] space-y-1">
-                <div className="text-gray-400 font-semibold">
+                <div className="cb-native-label text-gray-400 font-semibold">
                   {COMMAND_BUILDER_CONTENT.findLabel}
                 </div>
                 <div
-                  className="text-gray-800 bg-gray-200/40 p-1.5 rounded truncate"
+                  className="cb-native-command text-gray-800 bg-gray-200/40 p-1.5 rounded truncate"
                   title={osDetails.macos.find}
                 >
                   {osDetails.macos.find}
                 </div>
-                <div className="text-gray-400 font-semibold mt-1">
+                <div className="cb-native-label text-gray-400 font-semibold mt-1">
                   {COMMAND_BUILDER_CONTENT.killLabel}
                 </div>
                 <div
-                  className="text-gray-800 bg-gray-200/40 p-1.5 rounded truncate"
+                  className="cb-native-command text-gray-800 bg-gray-200/40 p-1.5 rounded truncate"
                   title={osDetails.macos.kill}
                 >
                   {osDetails.macos.kill}
@@ -528,20 +528,20 @@ export default function CommandBuilder() {
                 </p>
               </div>
               <div className="mt-4 pt-3 border-t border-gray-200/50 font-mono text-[10px] space-y-1">
-                <div className="text-gray-400 font-semibold">
+                <div className="cb-native-label text-gray-400 font-semibold">
                   {COMMAND_BUILDER_CONTENT.findLabel}
                 </div>
                 <div
-                  className="text-gray-800 bg-gray-200/40 p-1.5 rounded truncate"
+                  className="cb-native-command text-gray-800 bg-gray-200/40 p-1.5 rounded truncate"
                   title={osDetails.linux.find}
                 >
                   {osDetails.linux.find}
                 </div>
-                <div className="text-gray-400 font-semibold mt-1">
+                <div className="cb-native-label text-gray-400 font-semibold mt-1">
                   {COMMAND_BUILDER_CONTENT.killLabel}
                 </div>
                 <div
-                  className="text-gray-800 bg-gray-200/40 p-1.5 rounded truncate"
+                  className="cb-native-command text-gray-800 bg-gray-200/40 p-1.5 rounded truncate"
                   title={osDetails.linux.kill}
                 >
                   {osDetails.linux.kill}
@@ -564,20 +564,20 @@ export default function CommandBuilder() {
                 </p>
               </div>
               <div className="mt-4 pt-3 border-t border-gray-200/50 font-mono text-[10px] space-y-1">
-                <div className="text-gray-400 font-semibold">
+                <div className="cb-native-label text-gray-400 font-semibold">
                   {COMMAND_BUILDER_CONTENT.findLabel}
                 </div>
                 <div
-                  className="text-gray-800 bg-gray-200/40 p-1.5 rounded truncate"
+                  className="cb-native-command text-gray-800 bg-gray-200/40 p-1.5 rounded truncate"
                   title={osDetails.windows.find}
                 >
                   {osDetails.windows.find}
                 </div>
-                <div className="text-gray-400 font-semibold mt-1">
+                <div className="cb-native-label text-gray-400 font-semibold mt-1">
                   {COMMAND_BUILDER_CONTENT.killLabel}
                 </div>
                 <div
-                  className="text-gray-800 bg-gray-200/40 p-1.5 rounded truncate"
+                  className="cb-native-command text-gray-800 bg-gray-200/40 p-1.5 rounded truncate"
                   title={osDetails.windows.kill}
                 >
                   {osDetails.windows.kill}
