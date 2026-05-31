@@ -4,7 +4,17 @@
  */
 
 import { useState } from 'react';
-import { TerminalSquare, Boxes, Braces, Copy, Check, ShieldAlert, GitBranch } from 'lucide-react';
+import {
+  TerminalSquare,
+  Boxes,
+  Braces,
+  Copy,
+  Check,
+  ShieldAlert,
+  GitBranch,
+  AlertCircle,
+} from 'lucide-react';
+import { copyTextWithFallback } from '../utils/clipboard';
 
 type PackageManager = 'npm' | 'yarn' | 'pnpm';
 
@@ -32,8 +42,7 @@ const CLI_COMMANDS = [
 const API_SNIPPET = `import { portKill } from '@gks101/port-kill';
 
 // Terminate single or multiple ports seamlessly
-await portKill({
-  port: [3000, 8080],
+await portKill([3000, 8080], {
   force: true,
   verbose: true
 });`;
@@ -41,11 +50,20 @@ await portKill({
 export default function QuickStartReference() {
   const [activePm, setActivePm] = useState<PackageManager>('npm');
   const [copied, setCopied] = useState<string | null>(null);
+  const [copyFailed, setCopyFailed] = useState<string | null>(null);
 
-  const copyToClipboard = (text: string, key: string) => {
-    navigator.clipboard.writeText(text);
-    setCopied(key);
-    setTimeout(() => setCopied(null), 1800);
+  const copyToClipboard = async (text: string, key: string) => {
+    const success = await copyTextWithFallback(text);
+    if (success) {
+      setCopyFailed(null);
+      setCopied(key);
+      setTimeout(() => setCopied(null), 1800);
+      return;
+    }
+
+    setCopied(null);
+    setCopyFailed(key);
+    setTimeout(() => setCopyFailed(null), 1800);
   };
 
   return (
@@ -95,10 +113,14 @@ export default function QuickStartReference() {
               <button
                 onClick={() => copyToClipboard(INSTALL_COMMANDS[activePm], `install-${activePm}`)}
                 className="text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
-                title="Copy install command"
+                title={
+                  copyFailed === `install-${activePm}` ? 'Copy failed' : 'Copy install command'
+                }
               >
                 {copied === `install-${activePm}` ? (
                   <Check className="w-4 h-4 text-blue-600" />
+                ) : copyFailed === `install-${activePm}` ? (
+                  <AlertCircle className="w-4 h-4 text-rose-500" />
                 ) : (
                   <Copy className="w-4 h-4" />
                 )}
@@ -125,10 +147,12 @@ export default function QuickStartReference() {
                     <button
                       onClick={() => copyToClipboard(item.command, item.command)}
                       className="text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
-                      title="Copy CLI command"
+                      title={copyFailed === item.command ? 'Copy failed' : 'Copy CLI command'}
                     >
                       {copied === item.command ? (
                         <Check className="w-4 h-4 text-blue-600" />
+                      ) : copyFailed === item.command ? (
+                        <AlertCircle className="w-4 h-4 text-rose-500" />
                       ) : (
                         <Copy className="w-4 h-4" />
                       )}

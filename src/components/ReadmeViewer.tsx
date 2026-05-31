@@ -14,6 +14,7 @@ import {
   Check,
   Copy,
   Flame,
+  AlertCircle,
 } from 'lucide-react';
 import {
   README_VIEWER_API_ROWS,
@@ -32,14 +33,24 @@ import {
   README_VIEWER_INSTALL_SNIPPETS,
   README_VIEWER_TEST_SNIPPET,
 } from './constants/readmeViewer.constants';
+import { copyTextWithFallback } from '../utils/clipboard';
 
 export default function ReadmeViewer() {
   const [copied, setCopied] = useState<string | null>(null);
+  const [copyFailed, setCopyFailed] = useState<string | null>(null);
 
-  const copySnippet = (text: string, id: string) => {
-    navigator.clipboard.writeText(text);
-    setCopied(id);
-    setTimeout(() => setCopied(null), README_VIEWER_CONSTANTS.copiedTimeoutMs);
+  const copySnippet = async (text: string, id: string) => {
+    const success = await copyTextWithFallback(text);
+    if (success) {
+      setCopyFailed(null);
+      setCopied(id);
+      setTimeout(() => setCopied(null), README_VIEWER_CONSTANTS.copiedTimeoutMs);
+      return;
+    }
+
+    setCopied(null);
+    setCopyFailed(id);
+    setTimeout(() => setCopyFailed(null), README_VIEWER_CONSTANTS.copiedTimeoutMs);
   };
 
   return (
@@ -148,6 +159,8 @@ export default function ReadmeViewer() {
                 >
                   {copied === snippet.id ? (
                     <Check className="w-4 h-4 text-blue-600" />
+                  ) : copyFailed === snippet.id ? (
+                    <AlertCircle className="w-4 h-4 text-rose-500" />
                   ) : (
                     <Copy className="w-4 h-4" />
                   )}

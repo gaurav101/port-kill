@@ -7,8 +7,9 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import Editor from '@monaco-editor/react';
 import { LIBRARY_FILES } from '../data/mockFiles';
-import { FileCode, Copy, Check, Info, FileJson, Layers, Activity } from 'lucide-react';
+import { FileCode, Copy, Check, Info, FileJson, Layers, Activity, AlertCircle } from 'lucide-react';
 import { CODE_EXPLORER_CONSTANTS } from './constants/codeExplorer.constants';
+import { copyTextWithFallback } from '../utils/clipboard';
 
 function normalizeEditorLanguage(language: string): string {
   if (language === 'typescript') return 'typescript';
@@ -21,14 +22,23 @@ export default function CodeExplorer() {
     CODE_EXPLORER_CONSTANTS.defaultActiveFileIndex
   );
   const [copied, setCopied] = useState<boolean>(false);
+  const [copyFailed, setCopyFailed] = useState<boolean>(false);
 
   const activeFile =
     LIBRARY_FILES[activeFileIdx] || LIBRARY_FILES[CODE_EXPLORER_CONSTANTS.defaultActiveFileIndex];
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(activeFile.content);
-    setCopied(true);
-    setTimeout(() => setCopied(false), CODE_EXPLORER_CONSTANTS.copyTimeoutMs);
+  const handleCopy = async () => {
+    const success = await copyTextWithFallback(activeFile.content);
+    if (success) {
+      setCopyFailed(false);
+      setCopied(true);
+      setTimeout(() => setCopied(false), CODE_EXPLORER_CONSTANTS.copyTimeoutMs);
+      return;
+    }
+
+    setCopied(false);
+    setCopyFailed(true);
+    setTimeout(() => setCopyFailed(false), CODE_EXPLORER_CONSTANTS.copyTimeoutMs);
   };
 
   // Helper to choose file extension avatar icons
@@ -64,6 +74,7 @@ export default function CodeExplorer() {
                   onClick={() => {
                     setActiveFileIdx(idx);
                     setCopied(false);
+                    setCopyFailed(false);
                   }}
                   className={`ce-file-button w-full text-left p-2.5 rounded-xl border transition-all flex items-start gap-3 cursor-pointer ${isActive ? 'ce-file-button-active bg-blue-50/40 border-blue-200 text-slate-900 font-semibold' : 'ce-file-button-inactive bg-slate-50/60 hover:bg-slate-100/60 border-transparent text-slate-600'}`}
                 >
@@ -123,6 +134,13 @@ export default function CodeExplorer() {
                   className="flex items-center gap-1 text-[11px] font-mono text-blue-400 font-semibold"
                 >
                   <Check className="w-3.5 h-3.5" /> {CODE_EXPLORER_CONSTANTS.copiedLabel}
+                </motion.span>
+              ) : copyFailed ? (
+                <motion.span
+                  key="copy-failed"
+                  className="flex items-center gap-1 text-[11px] text-rose-400 font-mono"
+                >
+                  <AlertCircle className="w-3.5 h-3.5" /> Copy Failed
                 </motion.span>
               ) : (
                 <motion.span

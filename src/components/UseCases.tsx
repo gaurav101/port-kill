@@ -4,23 +4,33 @@
  */
 
 import { useMemo, useState } from 'react';
-import { Copy, Check, Layers, TerminalSquare, Braces } from 'lucide-react';
+import { Copy, Check, Layers, TerminalSquare, Braces, AlertCircle } from 'lucide-react';
 import { USE_CASES, USE_CASES_CONTENT, UseCaseId } from './constants/useCases.constants';
 import QuickStartReference from './QuickStartReference';
+import { copyTextWithFallback } from '../utils/clipboard';
 
 export default function UseCases() {
   const [activeUseCase, setActiveUseCase] = useState<UseCaseId>(USE_CASES[0].id);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [copyFailedKey, setCopyFailedKey] = useState<string | null>(null);
 
   const selectedUseCase = useMemo(
     () => USE_CASES.find((item) => item.id === activeUseCase) ?? USE_CASES[0],
     [activeUseCase]
   );
 
-  const copyContent = (text: string, key: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedKey(key);
-    setTimeout(() => setCopiedKey(null), 1800);
+  const copyContent = async (text: string, key: string) => {
+    const success = await copyTextWithFallback(text);
+    if (success) {
+      setCopyFailedKey(null);
+      setCopiedKey(key);
+      setTimeout(() => setCopiedKey(null), 1800);
+      return;
+    }
+
+    setCopiedKey(null);
+    setCopyFailedKey(key);
+    setTimeout(() => setCopyFailedKey(null), 1800);
   };
 
   return (
@@ -100,6 +110,8 @@ export default function UseCases() {
               >
                 {copiedKey === `${selectedUseCase.id}-cli` ? (
                   <Check className="w-4 h-4 text-blue-400" />
+                ) : copyFailedKey === `${selectedUseCase.id}-cli` ? (
+                  <AlertCircle className="w-4 h-4 text-rose-400" />
                 ) : (
                   <Copy className="w-4 h-4" />
                 )}
@@ -125,6 +137,8 @@ export default function UseCases() {
               >
                 {copiedKey === `${selectedUseCase.id}-code` ? (
                   <Check className="w-4 h-4 text-blue-400" />
+                ) : copyFailedKey === `${selectedUseCase.id}-code` ? (
+                  <AlertCircle className="w-4 h-4 text-rose-400" />
                 ) : (
                   <Copy className="w-4 h-4" />
                 )}

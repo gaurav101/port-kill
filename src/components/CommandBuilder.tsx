@@ -17,6 +17,8 @@ import {
   COMMAND_BUILDER_VALUES,
 } from './constants/commandBuilder.constants';
 import terminalDemoVideo from '../../assets/terminal-demo.mp4';
+import { copyTextWithFallback } from '../utils/clipboard';
+import { resolveEffectiveSignal, shouldIncludeSignalFlag } from './utils/commandBuilder.utils';
 
 export default function CommandBuilder() {
   const [portInputs, setPortInputs] = useState<string>(COMMAND_BUILDER_DEFAULTS.portInput);
@@ -27,6 +29,7 @@ export default function CommandBuilder() {
   const [signal, setSignal] = useState<string>(COMMAND_BUILDER_DEFAULTS.defaultSignal);
   const [hasCustomLogger, setHasCustomLogger] = useState<boolean>(false);
   const [copiedSection, setCopiedSection] = useState<string | null>(null);
+  const [copyFailedSection, setCopyFailedSection] = useState<string | null>(null);
 
   const parsedPorts = portInputs
     .split(/[\s,]+/)
@@ -41,27 +44,38 @@ export default function CommandBuilder() {
   const displayPorts =
     parsedPorts.length > 0 ? parsedPorts : [COMMAND_BUILDER_DEFAULTS.fallbackPort];
 
-  const triggerCopy = (text: string, sectionId: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedSection(sectionId);
-    setTimeout(() => setCopiedSection(null), COMMAND_BUILDER_DEFAULTS.copyTimeoutMs);
+  const triggerCopy = async (text: string, sectionId: string) => {
+    const success = await copyTextWithFallback(text);
+    if (success) {
+      setCopyFailedSection(null);
+      setCopiedSection(sectionId);
+      setTimeout(() => setCopiedSection(null), COMMAND_BUILDER_DEFAULTS.copyTimeoutMs);
+      return;
+    }
+
+    setCopiedSection(null);
+    setCopyFailedSection(sectionId);
+    setTimeout(() => setCopyFailedSection(null), COMMAND_BUILDER_DEFAULTS.copyTimeoutMs);
   };
 
   const generateCliCommand = () => {
     const portsStr = displayPorts.join(' ');
+    const effectiveSignal = resolveEffectiveSignal(force, signal, {
+      defaultSignal: COMMAND_BUILDER_DEFAULTS.defaultSignal,
+      gracefulSignal: COMMAND_BUILDER_DEFAULTS.gracefulSignal,
+    });
     let flags = '';
     if (verbose) flags += ` ${COMMAND_BUILDER_FLAGS.verbose}`;
     if (!force) flags += ` ${COMMAND_BUILDER_FLAGS.noForce}`;
     if (dryRun) flags += ` ${COMMAND_BUILDER_FLAGS.dryRun}`;
 
     if (
-      signal !== COMMAND_BUILDER_DEFAULTS.defaultSignal &&
-      signal !== COMMAND_BUILDER_DEFAULTS.gracefulSignal &&
-      force
+      shouldIncludeSignalFlag(force, effectiveSignal, {
+        defaultSignal: COMMAND_BUILDER_DEFAULTS.defaultSignal,
+        gracefulSignal: COMMAND_BUILDER_DEFAULTS.gracefulSignal,
+      })
     ) {
-      flags += ` ${COMMAND_BUILDER_FLAGS.signal} ${signal}`;
-    } else if (!force && signal !== COMMAND_BUILDER_DEFAULTS.gracefulSignal) {
-      flags += ` ${COMMAND_BUILDER_FLAGS.signal} ${signal}`;
+      flags += ` ${COMMAND_BUILDER_FLAGS.signal} ${effectiveSignal}`;
     }
 
     return `${COMMAND_BUILDER_VALUES.cliCommand} ${portsStr}${flags}`;
@@ -72,8 +86,20 @@ export default function CommandBuilder() {
       displayPorts.length === 1 ? String(displayPorts[0]) : `[${displayPorts.join(', ')}]`;
 
     const optionsObj: string[] = [];
+    const effectiveSignal = resolveEffectiveSignal(force, signal, {
+      defaultSignal: COMMAND_BUILDER_DEFAULTS.defaultSignal,
+      gracefulSignal: COMMAND_BUILDER_DEFAULTS.gracefulSignal,
+    });
+
     if (!force) optionsObj.push(COMMAND_BUILDER_VALUES.optionForceFalse);
-    if (signal !== COMMAND_BUILDER_DEFAULTS.defaultSignal) optionsObj.push(`  signal: '${signal}'`);
+    if (
+      shouldIncludeSignalFlag(force, effectiveSignal, {
+        defaultSignal: COMMAND_BUILDER_DEFAULTS.defaultSignal,
+        gracefulSignal: COMMAND_BUILDER_DEFAULTS.gracefulSignal,
+      })
+    ) {
+      optionsObj.push(`  signal: '${effectiveSignal}'`);
+    }
     if (verbose) optionsObj.push(COMMAND_BUILDER_VALUES.optionVerboseTrue);
     if (dryRun) optionsObj.push(COMMAND_BUILDER_VALUES.optionDryRunTrue);
     if (hasCustomLogger) optionsObj.push(COMMAND_BUILDER_SNIPPETS.customLoggerOption);
@@ -89,7 +115,10 @@ export default function CommandBuilder() {
 
   const getOsCommandInfo = () => {
     const targetPort = displayPorts[0];
-    const killSigFlag = force ? COMMAND_BUILDER_DEFAULTS.defaultSignal : signal;
+    const killSigFlag = resolveEffectiveSignal(force, signal, {
+      defaultSignal: COMMAND_BUILDER_DEFAULTS.defaultSignal,
+      gracefulSignal: COMMAND_BUILDER_DEFAULTS.gracefulSignal,
+    });
     const shellSignal = killSigFlag.startsWith(COMMAND_BUILDER_VALUES.posixSignalPrefix)
       ? killSigFlag.slice(COMMAND_BUILDER_VALUES.posixSignalPrefix.length)
       : killSigFlag;
@@ -198,6 +227,9 @@ export default function CommandBuilder() {
                 </div>
                 <button
                   onClick={() => setForce(!force)}
+                  role="switch"
+                  aria-checked={force}
+                  aria-label={COMMAND_BUILDER_CONTENT.aggressiveForceKill}
                   className={`cb-kill-toggle relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
                     force ? 'bg-blue-600' : 'bg-slate-200'
                   }`}
@@ -221,6 +253,9 @@ export default function CommandBuilder() {
                 </div>
                 <button
                   onClick={() => setDryRun(!dryRun)}
+                  role="switch"
+                  aria-checked={dryRun}
+                  aria-label={COMMAND_BUILDER_CONTENT.safeDryRun}
                   className={`cb-kill-toggle relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
                     dryRun ? 'bg-blue-600' : 'bg-slate-200'
                   }`}
@@ -244,6 +279,9 @@ export default function CommandBuilder() {
                 </div>
                 <button
                   onClick={() => setVerbose(!verbose)}
+                  role="switch"
+                  aria-checked={verbose}
+                  aria-label={COMMAND_BUILDER_CONTENT.verboseLogs}
                   className={`cb-kill-toggle relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
                     verbose ? 'bg-blue-600' : 'bg-slate-200'
                   }`}
@@ -267,6 +305,9 @@ export default function CommandBuilder() {
                 </div>
                 <button
                   onClick={() => setHasCustomLogger(!hasCustomLogger)}
+                  role="switch"
+                  aria-checked={hasCustomLogger}
+                  aria-label={COMMAND_BUILDER_CONTENT.customLogCallback}
                   className={`cb-kill-toggle relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
                     hasCustomLogger ? 'bg-blue-600' : 'bg-slate-200'
                   }`}
@@ -359,6 +400,13 @@ export default function CommandBuilder() {
                   >
                     <Check className="w-3.5 h-3.5" /> {COMMAND_BUILDER_CONTENT.copied}
                   </motion.span>
+                ) : copyFailedSection === COMMAND_BUILDER_VALUES.sectionCli ? (
+                  <motion.span
+                    key="copy-failed"
+                    className="flex items-center gap-1 text-[11px] text-rose-400 font-mono"
+                  >
+                    <AlertCircle className="w-3.5 h-3.5" /> Copy failed
+                  </motion.span>
                 ) : (
                   <motion.span
                     key="copy"
@@ -421,6 +469,13 @@ export default function CommandBuilder() {
                     className="flex items-center gap-1 text-[11px] font-mono text-blue-400 font-semibold"
                   >
                     <Check className="w-3.5 h-3.5" /> {COMMAND_BUILDER_CONTENT.copied}
+                  </motion.span>
+                ) : copyFailedSection === COMMAND_BUILDER_VALUES.sectionCode ? (
+                  <motion.span
+                    key="copy-failed"
+                    className="flex items-center gap-1 text-[11px] text-rose-400 font-mono"
+                  >
+                    <AlertCircle className="w-3.5 h-3.5" /> Copy failed
                   </motion.span>
                 ) : (
                   <motion.span

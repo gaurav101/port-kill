@@ -15,6 +15,7 @@ import {
   ShieldCheck,
   Sun,
   Moon,
+  AlertCircle,
 } from 'lucide-react';
 import {
   HEADER_BADGES,
@@ -25,6 +26,7 @@ import {
   HEADER_INSTALL_COMMANDS,
   HEADER_INSTALL_NOTES,
 } from './constants/header.constants';
+import { copyTextWithFallback } from '../utils/clipboard';
 
 interface HeaderProps {
   theme: 'light' | 'dark';
@@ -33,6 +35,7 @@ interface HeaderProps {
 
 export default function Header({ theme, onToggleTheme }: HeaderProps) {
   const [copiedCmd, setCopiedCmd] = useState<string | null>(null);
+  const [copyFailedCmd, setCopyFailedCmd] = useState<string | null>(null);
   const [selectedInstallCmd, setSelectedInstallCmd] = useState<
     keyof typeof HEADER_INSTALL_COMMANDS
   >(HEADER_DEFAULT_ACTION.primaryInstallCopyKey);
@@ -48,10 +51,18 @@ export default function Header({ theme, onToggleTheme }: HeaderProps) {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const copyToClipboard = (cmdText: string, label: string) => {
-    navigator.clipboard.writeText(cmdText);
-    setCopiedCmd(label);
-    setTimeout(() => setCopiedCmd(null), 2000);
+  const copyToClipboard = async (cmdText: string, label: string) => {
+    const success = await copyTextWithFallback(cmdText);
+    if (success) {
+      setCopyFailedCmd(null);
+      setCopiedCmd(label);
+      setTimeout(() => setCopiedCmd(null), 2000);
+      return;
+    }
+
+    setCopiedCmd(null);
+    setCopyFailedCmd(label);
+    setTimeout(() => setCopyFailedCmd(null), 2000);
   };
 
   return (
@@ -178,9 +189,11 @@ export default function Header({ theme, onToggleTheme }: HeaderProps) {
                                     : 'text-slate-600 bg-white border-slate-200 hover:bg-slate-100'
                                 }`}
                               >
-                                {copiedCmd === type
-                                  ? HEADER_CONTENT.copiedLabel
-                                  : HEADER_INSTALL_ACTION_LABELS[type]}
+                                {copyFailedCmd === type
+                                  ? 'Failed'
+                                  : copiedCmd === type
+                                    ? HEADER_CONTENT.copiedLabel
+                                    : HEADER_INSTALL_ACTION_LABELS[type]}
                               </button>
                             );
                           })}
@@ -208,6 +221,8 @@ export default function Header({ theme, onToggleTheme }: HeaderProps) {
                         >
                           {copiedCmd === selectedInstallCmd ? (
                             <Check className="w-4 h-4 text-blue-600" />
+                          ) : copyFailedCmd === selectedInstallCmd ? (
+                            <AlertCircle className="w-4 h-4 text-rose-500" />
                           ) : (
                             <Copy className="w-4 h-4" />
                           )}
