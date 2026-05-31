@@ -15,8 +15,18 @@ const INSTALL_COMMANDS: Record<PackageManager, string> = {
 };
 
 const CLI_COMMANDS = [
-  'npx @gks101/port-kill 3000',
-  'npx @gks101/port-kill 3000 8080 --verbose',
+  {
+    note: 'If already installed globally',
+    command: 'port-kill 3000',
+  },
+  {
+    note: 'Without global install',
+    command: 'npx @gks101/port-kill 3000',
+  },
+  {
+    note: 'Multiple ports with verbose logs',
+    command: 'npx @gks101/port-kill 3000 8080 --verbose',
+  },
 ] as const;
 
 const API_SNIPPET = `import { portKill } from '@gks101/port-kill';
@@ -104,23 +114,26 @@ export default function QuickStartReference() {
               </p>
             </div>
             <div className="space-y-2">
-              {CLI_COMMANDS.map((command) => (
+              {CLI_COMMANDS.map((item) => (
                 <div
-                  key={command}
-                  className="rounded-lg border border-slate-200 bg-white px-3 py-2.5 font-mono text-[12px] flex items-center justify-between gap-3"
+                  key={item.command}
+                  className="rounded-lg border border-slate-200 bg-white px-3 py-2.5 space-y-1"
                 >
-                  <code className="text-slate-800">{command}</code>
-                  <button
-                    onClick={() => copyToClipboard(command, command)}
-                    className="text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
-                    title="Copy CLI command"
-                  >
-                    {copied === command ? (
-                      <Check className="w-4 h-4 text-blue-600" />
-                    ) : (
-                      <Copy className="w-4 h-4" />
-                    )}
-                  </button>
+                  <p className="text-[11px] text-slate-500 font-sans">{item.note}</p>
+                  <div className="font-mono text-[12px] flex items-center justify-between gap-3">
+                    <code className="text-slate-800">{item.command}</code>
+                    <button
+                      onClick={() => copyToClipboard(item.command, item.command)}
+                      className="text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
+                      title="Copy CLI command"
+                    >
+                      {copied === item.command ? (
+                        <Check className="w-4 h-4 text-blue-600" />
+                      ) : (
+                        <Copy className="w-4 h-4" />
+                      )}
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

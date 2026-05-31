@@ -102,8 +102,12 @@ export const README_VIEWER_INSTALL_SNIPPETS = [
 
 export const README_VIEWER_CLI_EXAMPLES = [
   {
-    description: '# Terminate processes on port 3000',
+    description: '# If already installed globally',
     command: '$ port-kill 3000',
+  },
+  {
+    description: '# Without global install (run via npx)',
+    command: '$ npx @gks101/port-kill 3000',
   },
   {
     description: '# Terminate multiple ports in one run',
