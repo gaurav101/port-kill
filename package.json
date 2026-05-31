@@ -18,7 +18,6 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@gks101/port-kill": "./port-kill-pkg/gks101-port-kill-1.0.2.tgz",
     "@monaco-editor/react": "^4.7.0",
     "@tailwindcss/vite": "^4.1.14",
     "@gks101/localyx": "^1.0.2",
