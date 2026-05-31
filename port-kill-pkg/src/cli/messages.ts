@@ -19,12 +19,14 @@ export const CLI_HELP = `
     -v, --version       Show version information
     -d, --verbose       Enable verbose debugging/monitoring logs
     -s, --signal <sig>  Specify custom termination signal (Unix-only, e.g. SIGTERM)
+    --force             Explicitly enforce aggressive terminate mode (default behavior)
     --no-force          Graceful terminate instead of aggressive (SIGKILL / taskkill /F)
     --dry-run           Search, detect, and audit process IDs without killing them
 
   Examples:
     $ port-kill 3000
     $ port-kill 8080 8081 --verbose
+    $ port-kill 3000 8080 --force
     $ port-kill 4500 --signal SIGTERM --dry-run
     `;
 

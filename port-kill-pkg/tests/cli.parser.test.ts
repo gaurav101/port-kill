@@ -69,6 +69,20 @@ describe('parseCliArgs', () => {
     });
   });
 
+  it('supports explicit --force and keeps force true', () => {
+    const result = parseCliArgs(['3000', '--force', '--verbose']);
+    expect(result).toEqual({
+      type: 'run',
+      ports: [3000],
+      options: {
+        port: [3000],
+        force: true,
+        verbose: true,
+        dryRun: false,
+      },
+    });
+  });
+
   it('returns error when only flags are given and no ports exist', () => {
     const result = parseCliArgs(['--verbose']);
     expect(result.type).toBe('error');

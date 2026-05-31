@@ -10,6 +10,7 @@ export const CLI_FLAGS = {
   VERSION_SHORT: '-v',
   VERBOSE: '--verbose',
   VERBOSE_SHORT: '-d',
+  FORCE: '--force',
   DRY_RUN: '--dry-run',
   NO_FORCE: '--no-force',
   SIGNAL: '--signal',

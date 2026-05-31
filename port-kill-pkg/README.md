@@ -1,23 +1,43 @@
 # @gks101/port-kill
 
-[![npm version](https://img.shields.io/badge/npm-v1.0.1-blue.svg)](https://www.npmjs.com/package/@gks101/port-kill)
+[![npm version](https://img.shields.io/badge/npm-v1.0.2-blue.svg)](https://www.npmjs.com/package/@gks101/port-kill)
 [![node](https://img.shields.io/badge/node-%3E%3D16-339933.svg)](https://nodejs.org/)
 [![license](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
-Lightweight cross-platform port termination for Node.js: programmatic API (`portKill`, `portKillSync`) plus CLI (`port-kill`) with zero runtime dependencies.
+Lightweight cross-platform port termination for Node.js with programmatic APIs (`portKill`, `portKillSync`) and CLI (`port-kill`), with zero runtime dependencies.
 
 ## Highlights
 
-- Supports macOS/Linux and Windows.
-- POSIX lookup uses `lsof` first, then `fuser` fallback.
-- Windows lookup uses `netstat -ano` and kills with `taskkill /T` (`/F` when force is enabled).
-- Supports single or multiple ports.
-- Supports dry run mode, verbose logs, force/no-force, and custom logger callback.
+- Cross-platform support: Windows, macOS, Linux.
+- Multi-port targeting in one command.
+- Supports verbose logs, dry-run audits, force/graceful termination, and signal override.
+- Safe defaults for dev/test/CI port cleanup workflows.
 
-## Install
+## Compatibility
+
+| Area                  | Support / Requirement                                            | Notes                                                            |
+| --------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------- |
+| Node.js               | `>=16.0.0`                                                       | Declared in package `engines.node`.                              |
+| Windows               | `cmd.exe`, PowerShell                                            | Uses `netstat` for PID discovery and `taskkill` for termination. |
+| macOS                 | Terminal shells (zsh/bash)                                       | Uses `lsof` with `fuser` fallback, and `kill`.                   |
+| Linux                 | Terminal shells (bash/sh/zsh)                                    | Uses `lsof` with `fuser` fallback, and `kill`.                   |
+| Required system tools | `lsof`, `fuser`, `kill` (POSIX); `netstat`, `taskkill` (Windows) | Must be available in `PATH`.                                     |
+
+### Permission behavior
+
+- Killing processes on protected/privileged ports (for example `80`, `443`) may require elevated privileges.
+- On macOS/Linux this can require `sudo`.
+- On Windows this can require an elevated Administrator shell.
+- Without required privileges, commands can fail for those ports and return a non-zero CLI exit code.
+
+## Installation
+
+Local (project/test workflows):
 
 ```bash
 npm install --save-dev @gks101/port-kill
+yarn add -D @gks101/port-kill
+pnpm add -D @gks101/port-kill
 ```
 
 Global CLI install (optional):
@@ -38,25 +58,33 @@ npx @gks101/port-kill 3000
 port-kill <ports...> [options]
 ```
 
-Examples:
+### CLI examples
 
 ```bash
+# Single port
 port-kill 3000
-port-kill 3000 8080 8081
-port-kill 3000 --verbose
-port-kill 3000 --dry-run
-port-kill 3000 --no-force
-port-kill 3000 --signal SIGTERM
+
+# Multiple ports in one run
+port-kill 3000 8080
+
+# Multiple ports with logs
+port-kill 3000 8080 --verbose
+
+# Graceful signal on POSIX
+port-kill 3000 8080 --no-force --signal SIGTERM
 ```
 
-Options:
+### CLI flags
 
-- `-h, --help`: show help.
-- `-v, --version`: show CLI version.
-- `-d, --verbose`: enable verbose logs.
-- `--dry-run`: discover PIDs without killing.
-- `--no-force`: disable force mode.
-- `-s, --signal <sig>`: POSIX signal override (ignored on Windows).
+| Flag             | Alias | Type   | Default                             | Description                                               |
+| ---------------- | ----- | ------ | ----------------------------------- | --------------------------------------------------------- |
+| `--help`         | `-h`  | none   | n/a                                 | Show help and exit with code `0`.                         |
+| `--version`      | `-v`  | none   | n/a                                 | Show version and exit with code `0`.                      |
+| `--verbose`      | `-d`  | none   | `false`                             | Print verbose execution details.                          |
+| `--dry-run`      | none  | none   | `false`                             | Discover PIDs without killing them.                       |
+| `--force`        | none  | none   | `true`                              | Explicitly enforce aggressive termination mode.           |
+| `--no-force`     | none  | none   | `false` (toggle)                    | Disable force mode and use graceful termination behavior. |
+| `--signal <sig>` | `-s`  | string | OS-derived (`SIGKILL` or `SIGTERM`) | POSIX-only signal override (ignored on Windows).          |
 
 ## Programmatic API
 
@@ -64,72 +92,77 @@ Options:
 import { portKill, portKillSync } from '@gks101/port-kill';
 ```
 
-### Async
+### Function signatures
 
 ```ts
-const results = await portKill([3000, 8080], {
+type PortKillSignal = 'SIGKILL' | 'SIGTERM' | 'SIGINT' | string;
+
+interface PortKillOptions {
+  force?: boolean;
+  signal?: PortKillSignal;
+  verbose?: boolean;
+  dryRun?: boolean;
+  logger?: (message: string, level?: 'info' | 'warn' | 'error' | 'debug') => void;
+}
+
+interface PortKillResult {
+  port: number;
+  success: boolean;
+  pids: number[];
+  message: string;
+  error?: string;
+  timestamp: string;
+}
+
+declare function portKill(
+  ports: number | number[],
+  options?: PortKillOptions
+): Promise<PortKillResult[]>;
+
+declare function portKillSync(
+  ports: number | number[],
+  options?: PortKillOptions
+): PortKillResult[];
+```
+
+### Programmatic examples (multi-port)
+
+```ts
+import { portKill, portKillSync } from '@gks101/port-kill';
+
+const asyncResults = await portKill([3000, 8080], {
   verbose: true,
   force: true,
 });
-```
 
-### Sync
-
-```ts
-const results = portKillSync(3000, {
-  dryRun: false,
-  force: true,
+const syncResults = portKillSync([3000, 8080], {
+  force: false,
+  signal: 'SIGTERM',
 });
 ```
 
-### `PortKillOptions`
+## Error and exit behavior
 
-| Option    | Type                       | Default                | Notes                                                               |
-| --------- | -------------------------- | ---------------------- | ------------------------------------------------------------------- |
-| `force`   | `boolean`                  | `true`                 | POSIX: `SIGKILL`; Windows: adds `taskkill /F`.                      |
-| `signal`  | `string`                   | `SIGKILL` or `SIGTERM` | POSIX-only and restricted to standard supported `SIG*` names.       |
-| `verbose` | `boolean`                  | `false`                | Enables debug-level logs.                                           |
-| `dryRun`  | `boolean`                  | `false`                | Finds matching PIDs and returns success result without termination. |
-| `logger`  | `(message, level) => void` | `undefined`            | Receives raw message and level (`info`, `warn`, `error`, `debug`).  |
+- If a port is already free (no active process found), operation is treated as success.
+  - Programmatic: returns `success: true` for that port.
+  - CLI: prints `Already free` and keeps exit code `0` (unless another targeted port fails).
+- CLI returns exit code `1` for parse errors, invalid signals, invalid ports, permission failures, or kill failures.
 
-### `PortKillResult`
+### Chaining note (`&&`)
 
-Each port returns:
+If you chain with `&&`, later commands run only when `port-kill` exits with `0`.
 
-- `port: number`
-- `success: boolean`
-- `pids: number[]`
-- `message: string`
-- `error?: string`
-- `timestamp: string`
+```bash
+port-kill 3000 8080 && npm run dev
+```
 
-## Intended Usage
+Use this when you want hard-stop behavior. If you want dev server boot to continue even if cleanup fails, use an alternative chain strategy in your shell.
 
-This project is intended for **Node.js and frontend development workflows**, including:
+## Security notes
 
-- Local dev server port cleanup.
-- Test setup/teardown helpers.
-- CI pipeline port-reset steps.
-
-It is **not intended to be a production process-orchestration utility** or a standalone host administration tool.
-
-## Security Notes
-
-- **TOCTOU / PID recycling:** like other OS wrapper tools, PID lookup and kill happen in separate steps, so a small race window exists on very high-churn hosts.
-- **PATH trust assumption:** system binaries (`lsof`, `fuser`, `netstat`, `kill`, `taskkill`) are resolved from the environment. Use trusted runtimes and avoid elevated execution (`sudo` / Administrator) unless required.
-- **EDR / allowlist context:** repeated socket lookup + process termination patterns can trigger enterprise endpoint alerts; configure allowlists for trusted CI runners where needed.
-- **Behavior stability:** runtime behavior remains intentionally unchanged to preserve developer experience and zero-runtime-dependency simplicity.
-
-## Notes
-
-- Programmatic API and CLI both enforce strict port validation (`1..65535`, integers only).
-- POSIX signal overrides are validated against a standard signal allowlist.
-- Command execution uses structured `{ binary, args }` spawning with `shell: false`.
-- The library automatically skips `process.pid` and `process.ppid` to avoid self/parent termination.
-- Requires system tools available in PATH:
-  - POSIX: `lsof`, `fuser`, `kill`
-  - Windows: `netstat`, `taskkill`
-- Signals are ignored on Windows.
+- PID lookup and kill are separate OS calls, so a TOCTOU race window can exist on high-churn hosts.
+- System binaries are resolved from `PATH` (`lsof`, `fuser`, `netstat`, `kill`, `taskkill`).
+- Prefer trusted runtime environments; use elevated privileges only when needed.
 
 ## License
 

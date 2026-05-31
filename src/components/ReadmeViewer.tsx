@@ -17,11 +17,17 @@ import {
 } from 'lucide-react';
 import {
   README_VIEWER_API_ROWS,
+  README_VIEWER_API_SIGNATURE_SNIPPET,
   README_VIEWER_ARCHITECTURE_SNIPPET,
   README_VIEWER_BADGES,
+  README_VIEWER_CHAINING_WARNING,
   README_VIEWER_CLI_EXAMPLES,
+  README_VIEWER_CLI_FLAG_ROWS,
+  README_VIEWER_COMPATIBILITY_ROWS,
   README_VIEWER_CONSTANTS,
+  README_VIEWER_ERROR_BEHAVIOR_NOTES,
   README_VIEWER_FEATURES,
+  README_VIEWER_PERMISSION_NOTES,
   README_VIEWER_SECURITY_NOTES,
   README_VIEWER_INSTALL_SNIPPETS,
   README_VIEWER_TEST_SNIPPET,
@@ -83,6 +89,40 @@ export default function ReadmeViewer() {
       <div className="space-y-3 pt-2 font-sans">
         <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
           <ShieldCheck className="w-5 h-5 text-blue-600" />
+          {README_VIEWER_CONSTANTS.compatibilityTitle}
+        </h3>
+        <div className="border border-slate-200 rounded-xl overflow-hidden text-xs shadow-xs">
+          <table className="min-w-full divide-y divide-slate-150">
+            <thead className="bg-slate-50 font-semibold text-slate-700 text-left">
+              <tr>
+                <th className="px-4 py-2.5">{README_VIEWER_CONSTANTS.tableHeaderEnvironment}</th>
+                <th className="px-4 py-2.5">{README_VIEWER_CONSTANTS.tableHeaderSupport}</th>
+                <th className="px-4 py-2.5">{README_VIEWER_CONSTANTS.tableHeaderNotes}</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 text-slate-600 bg-white">
+              {README_VIEWER_COMPATIBILITY_ROWS.map((row) => (
+                <tr key={row.environment}>
+                  <td className="px-4 py-2.5 font-semibold text-slate-900">{row.environment}</td>
+                  <td className="px-4 py-2.5 text-blue-700 font-mono">{row.support}</td>
+                  <td className="px-4 py-2.5 leading-relaxed">{row.notes}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="space-y-1">
+          {README_VIEWER_PERMISSION_NOTES.map((note) => (
+            <p key={note} className="text-xs text-slate-600 leading-relaxed">
+              {README_VIEWER_CONSTANTS.featureCheck} {note}
+            </p>
+          ))}
+        </div>
+      </div>
+
+      <div className="space-y-3 pt-2 font-sans">
+        <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+          <ShieldCheck className="w-5 h-5 text-blue-600" />
           {README_VIEWER_CONSTANTS.intendedUsageTitle}
         </h3>
         <p className="text-xs text-slate-600 leading-relaxed">
@@ -133,6 +173,64 @@ export default function ReadmeViewer() {
               <span>{item.command}</span>
             </div>
           ))}
+        </div>
+      </div>
+
+      <div className="space-y-4 pt-2 font-sans">
+        <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+          <Terminal className="w-5 h-5 text-blue-600" />
+          {README_VIEWER_CONSTANTS.cliFlagsTitle}
+        </h3>
+        <div className="border border-slate-200 rounded-xl overflow-hidden text-xs shadow-xs">
+          <table className="min-w-full divide-y divide-slate-150">
+            <thead className="bg-slate-50 font-semibold text-slate-700 text-left">
+              <tr>
+                <th className="px-4 py-2.5">{README_VIEWER_CONSTANTS.tableHeaderFlag}</th>
+                <th className="px-4 py-2.5">{README_VIEWER_CONSTANTS.tableHeaderAlias}</th>
+                <th className="px-4 py-2.5">{README_VIEWER_CONSTANTS.tableHeaderType}</th>
+                <th className="px-4 py-2.5">{README_VIEWER_CONSTANTS.tableHeaderDefault}</th>
+                <th className="px-4 py-2.5">{README_VIEWER_CONSTANTS.tableHeaderDescription}</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 text-slate-600 bg-white">
+              {README_VIEWER_CLI_FLAG_ROWS.map((row) => (
+                <tr key={row.flag}>
+                  <td className="px-4 py-2.5 font-mono font-bold text-slate-900">{row.flag}</td>
+                  <td className="px-4 py-2.5 font-mono text-blue-700">{row.alias}</td>
+                  <td className="px-4 py-2.5 font-mono text-slate-700">{row.type}</td>
+                  <td className="px-4 py-2.5 font-mono text-slate-500">{row.defaultValue}</td>
+                  <td className="px-4 py-2.5 leading-relaxed">{row.description}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="space-y-4 pt-2 font-sans">
+        <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+          <Key className="w-5 h-5 text-blue-600" />
+          {README_VIEWER_CONSTANTS.apiSignatureTitle}
+        </h3>
+        <div className="bg-slate-950 rounded-xl p-4 border border-slate-900 font-mono text-[11px] text-slate-300 leading-relaxed overflow-x-auto whitespace-pre">
+          {README_VIEWER_API_SIGNATURE_SNIPPET}
+        </div>
+      </div>
+
+      <div className="space-y-4 pt-2 font-sans">
+        <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+          <ShieldCheck className="w-5 h-5 text-blue-600" />
+          {README_VIEWER_CONSTANTS.errorBehaviorTitle}
+        </h3>
+        <div className="space-y-2">
+          {README_VIEWER_ERROR_BEHAVIOR_NOTES.map((item) => (
+            <p key={item} className="text-xs text-slate-600 leading-relaxed">
+              {README_VIEWER_CONSTANTS.featureCheck} {item}
+            </p>
+          ))}
+        </div>
+        <div className="bg-slate-950 rounded-xl p-3 border border-slate-900 font-mono text-[11px] text-slate-200 overflow-x-auto">
+          {README_VIEWER_CHAINING_WARNING}
         </div>
       </div>
 

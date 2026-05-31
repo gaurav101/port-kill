@@ -61,6 +61,8 @@ export function parseCliArgs(args: string[]): CliParseResult {
 
     if (arg === CLI_FLAGS.VERBOSE || arg === CLI_FLAGS.VERBOSE_SHORT) {
       options.verbose = true;
+    } else if (arg === CLI_FLAGS.FORCE) {
+      options.force = true;
     } else if (arg === CLI_FLAGS.DRY_RUN) {
       options.dryRun = true;
     } else if (arg === CLI_FLAGS.NO_FORCE) {
