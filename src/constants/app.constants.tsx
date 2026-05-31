@@ -19,7 +19,7 @@ export const APP_TAB_IDS = {
   BUILDER: 'builder' as TabId,
   TERMINAL: 'terminal' as TabId,
   EXPLORER: 'explorer' as TabId,
-  USE_CASES: 'use-cases' as TabId,
+  QUICK_REFERENCE: 'use-cases' as TabId,
   README: 'readme' as TabId,
 } as const;
 
@@ -38,34 +38,35 @@ export interface AppExternalLink {
 
 export const APP_TABS: AppTabDefinition[] = [
   {
-    id: APP_TAB_IDS.BUILDER,
-    name: 'Interactive Code Builder',
-    icon: <Sliders className="w-4 h-4" />,
-    description:
-      'Design custom programmatic snippets or CLI sequences instantly with multiple options.',
-  },
-  {
-    id: APP_TAB_IDS.USE_CASES,
-    name: 'Use Cases',
+    id: APP_TAB_IDS.QUICK_REFERENCE,
+    name: 'Quick Start & Reference',
     icon: <BriefcaseBusiness className="w-4 h-4" />,
     description: 'Explore practical scenarios, command recipes, and integration-ready examples.',
   },
   {
+    id: APP_TAB_IDS.BUILDER,
+    name: 'Code Builder',
+    icon: <Sliders className="w-4 h-4" />,
+    description:
+      'Design custom programmatic snippets or CLI sequences instantly with multiple options.',
+  },
+
+  {
     id: APP_TAB_IDS.TERMINAL,
-    name: 'Sandbox Terminal Runtime',
+    name: 'Sandbox Terminal',
     icon: <TermIcon className="w-4 h-4" />,
     description: 'Trace step-by-step diagnostic loops and verify POSIX / Windows process kills.',
   },
   {
     id: APP_TAB_IDS.EXPLORER,
-    name: 'Package Code Explorer',
+    name: 'Code Explorer',
     icon: <FileCode className="w-4 h-4" />,
     description:
       'Review the actual NPM package TypeScript source code structured for high maintainability.',
   },
   {
     id: APP_TAB_IDS.README,
-    name: 'Official Package README',
+    name: 'README',
     icon: <BookOpen className="w-4 h-4" />,
     description: 'Access the complete API guide, test setup examples, and package metadata.',
   },

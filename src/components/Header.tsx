@@ -5,7 +5,17 @@
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Copy, Check, Terminal, Sparkles, Star, ExternalLink, Shield } from 'lucide-react';
+import {
+  Copy,
+  Check,
+  Terminal,
+  Sparkles,
+  Star,
+  ExternalLink,
+  Shield,
+  Sun,
+  Moon,
+} from 'lucide-react';
 import {
   HEADER_BADGES,
   HEADER_CONTENT,
@@ -16,7 +26,12 @@ import {
   HEADER_INSTALL_NOTES,
 } from './constants/header.constants';
 
-export default function Header() {
+interface HeaderProps {
+  theme: 'light' | 'dark';
+  onToggleTheme: () => void;
+}
+
+export default function Header({ theme, onToggleTheme }: HeaderProps) {
   const [copiedCmd, setCopiedCmd] = useState<string | null>(null);
   const [selectedInstallCmd, setSelectedInstallCmd] = useState<
     keyof typeof HEADER_INSTALL_COMMANDS
@@ -61,6 +76,19 @@ export default function Header() {
                   <span>{HEADER_INSTALL_COMMANDS.npm}</span>
                 </div>
               )}
+
+              <button
+                onClick={onToggleTheme}
+                aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+                title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+                className="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors cursor-pointer"
+              >
+                {theme === 'dark' ? (
+                  <Sun className="w-4 h-4 text-amber-500" />
+                ) : (
+                  <Moon className="w-4 h-4 text-slate-700" />
+                )}
+              </button>
 
               <a
                 href={HEADER_CONTENT.starUrl}

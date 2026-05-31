@@ -6,6 +6,7 @@
 import { useMemo, useState } from 'react';
 import { Copy, Check, Layers, TerminalSquare, Braces } from 'lucide-react';
 import { USE_CASES, USE_CASES_CONTENT, UseCaseId } from './constants/useCases.constants';
+import QuickStartReference from './QuickStartReference';
 
 export default function UseCases() {
   const [activeUseCase, setActiveUseCase] = useState<UseCaseId>(USE_CASES[0].id);
@@ -24,6 +25,8 @@ export default function UseCases() {
 
   return (
     <div className="space-y-6">
+      <QuickStartReference />
+
       <section className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-3">
         <div className="flex items-center gap-2 text-slate-900">
           <Layers className="w-4 h-4 text-blue-600" />

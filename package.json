@@ -21,6 +21,7 @@
     "@gks101/port-kill": "./port-kill-pkg/gks101-port-kill-1.0.2.tgz",
     "@monaco-editor/react": "^4.7.0",
     "@tailwindcss/vite": "^4.1.14",
+    "@gks101/localyx": "^1.0.2",
     "@vitejs/plugin-react": "^5.0.4",
     "lucide-react": "^0.546.0",
     "monaco-editor": "^0.55.1",

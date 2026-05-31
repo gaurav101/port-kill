@@ -186,19 +186,19 @@ export default function CommandBuilder() {
               </span>
             </div>
 
-            <div className="space-y-3.5 bg-slate-50/50 p-4 rounded-xl border border-slate-200/60">
+            <div className="cb-kill-strategy space-y-3.5 bg-slate-50/50 p-4 rounded-xl border border-slate-200/60">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-semibold text-slate-800">
+                  <p className="cb-kill-title text-xs font-semibold text-slate-800">
                     {COMMAND_BUILDER_CONTENT.aggressiveForceKill}
                   </p>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="cb-kill-desc text-[11px] text-slate-400">
                     {COMMAND_BUILDER_CONTENT.aggressiveForceDesc}
                   </p>
                 </div>
                 <button
                   onClick={() => setForce(!force)}
-                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                  className={`cb-kill-toggle relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
                     force ? 'bg-blue-600' : 'bg-slate-200'
                   }`}
                 >
@@ -212,16 +212,16 @@ export default function CommandBuilder() {
 
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-semibold text-slate-800">
+                  <p className="cb-kill-title text-xs font-semibold text-slate-800">
                     {COMMAND_BUILDER_CONTENT.safeDryRun}
                   </p>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="cb-kill-desc text-[11px] text-slate-400">
                     {COMMAND_BUILDER_CONTENT.safeDryRunDesc}
                   </p>
                 </div>
                 <button
                   onClick={() => setDryRun(!dryRun)}
-                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                  className={`cb-kill-toggle relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
                     dryRun ? 'bg-blue-600' : 'bg-slate-200'
                   }`}
                 >
@@ -235,16 +235,16 @@ export default function CommandBuilder() {
 
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-semibold text-slate-800">
+                  <p className="cb-kill-title text-xs font-semibold text-slate-800">
                     {COMMAND_BUILDER_CONTENT.verboseLogs}
                   </p>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="cb-kill-desc text-[11px] text-slate-400">
                     {COMMAND_BUILDER_CONTENT.verboseLogsDesc}
                   </p>
                 </div>
                 <button
                   onClick={() => setVerbose(!verbose)}
-                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                  className={`cb-kill-toggle relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
                     verbose ? 'bg-blue-600' : 'bg-slate-200'
                   }`}
                 >
@@ -258,16 +258,16 @@ export default function CommandBuilder() {
 
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-semibold text-slate-800">
+                  <p className="cb-kill-title text-xs font-semibold text-slate-800">
                     {COMMAND_BUILDER_CONTENT.customLogCallback}
                   </p>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="cb-kill-desc text-[11px] text-slate-400">
                     {COMMAND_BUILDER_CONTENT.customLogDesc}
                   </p>
                 </div>
                 <button
                   onClick={() => setHasCustomLogger(!hasCustomLogger)}
-                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                  className={`cb-kill-toggle relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
                     hasCustomLogger ? 'bg-blue-600' : 'bg-slate-200'
                   }`}
                 >
