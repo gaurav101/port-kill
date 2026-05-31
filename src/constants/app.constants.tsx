@@ -9,16 +9,17 @@ import {
   Terminal as TermIcon,
   FileCode,
   BookOpen,
-  Github,
   CircleHelp,
+  BriefcaseBusiness,
 } from 'lucide-react';
 
-export type TabId = 'builder' | 'terminal' | 'explorer' | 'readme';
+export type TabId = 'builder' | 'terminal' | 'explorer' | 'use-cases' | 'readme';
 
 export const APP_TAB_IDS = {
   BUILDER: 'builder' as TabId,
   TERMINAL: 'terminal' as TabId,
   EXPLORER: 'explorer' as TabId,
+  USE_CASES: 'use-cases' as TabId,
   README: 'readme' as TabId,
 } as const;
 
@@ -44,6 +45,12 @@ export const APP_TABS: AppTabDefinition[] = [
       'Design custom programmatic snippets or CLI sequences instantly with multiple options.',
   },
   {
+    id: APP_TAB_IDS.USE_CASES,
+    name: 'Use Cases',
+    icon: <BriefcaseBusiness className="w-4 h-4" />,
+    description: 'Explore practical scenarios, command recipes, and integration-ready examples.',
+  },
+  {
     id: APP_TAB_IDS.TERMINAL,
     name: 'Sandbox Terminal Runtime',
     icon: <TermIcon className="w-4 h-4" />,
@@ -65,11 +72,6 @@ export const APP_TABS: AppTabDefinition[] = [
 ];
 
 export const APP_EXTERNAL_LINKS: AppExternalLink[] = [
-  {
-    name: 'Repository',
-    href: 'https://github.com/gaurav101/port-kill',
-    icon: <Github className="w-4 h-4" />,
-  },
   {
     name: 'Ask / Raise Question',
     href: 'https://github.com/gaurav101/port-kill/issues',

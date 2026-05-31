@@ -12,6 +12,7 @@ import CommandBuilder from './components/CommandBuilder';
 import TerminalPlayground from './components/TerminalPlayground';
 import CodeExplorer from './components/CodeExplorer';
 import ReadmeViewer from './components/ReadmeViewer';
+import UseCases from './components/UseCases';
 import {
   APP_EXTERNAL_LINKS,
   APP_FOOTER,
@@ -81,6 +82,7 @@ export default function App() {
               {activeTab === APP_TAB_IDS.BUILDER && <CommandBuilder />}
               {activeTab === APP_TAB_IDS.TERMINAL && <TerminalPlayground />}
               {activeTab === APP_TAB_IDS.EXPLORER && <CodeExplorer />}
+              {activeTab === APP_TAB_IDS.USE_CASES && <UseCases />}
               {activeTab === APP_TAB_IDS.README && <ReadmeViewer />}
             </motion.div>
           </AnimatePresence>

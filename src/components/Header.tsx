@@ -5,7 +5,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Copy, Check, Terminal, Sparkles, Star, ExternalLink } from 'lucide-react';
+import { Copy, Check, Terminal, Sparkles, Star, ExternalLink, Shield } from 'lucide-react';
 import {
   HEADER_BADGES,
   HEADER_CONTENT,
@@ -56,7 +56,7 @@ export default function Header() {
 
             <div className="flex items-center gap-2 shrink-0">
               {isCompact && (
-                <div className="inline-flex items-center gap-2 bg-slate-100 border border-slate-200 rounded px-2.5 py-1.5 text-[11px] text-slate-700 font-mono whitespace-nowrap">
+                <div className="hidden md:inline-flex items-center gap-2 bg-slate-100 border border-slate-200 rounded px-2.5 py-1.5 text-[11px] text-slate-700 font-mono whitespace-nowrap">
                   <Terminal className="w-3.5 h-3.5 text-slate-500 shrink-0" />
                   <span>{HEADER_INSTALL_COMMANDS.npm}</span>
                 </div>
@@ -96,6 +96,10 @@ export default function Header() {
                         <Sparkles className="w-3.5 h-3.5" />
                         <span>{HEADER_CONTENT.zeroDepsTag}</span>
                       </div>
+                      <div className="flex items-center gap-1 text-xs text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 font-semibold">
+                        <Shield className="w-3.5 h-3.5" />
+                        <span>{HEADER_CONTENT.secureTag}</span>
+                      </div>
                     </div>
                     <p className="text-sm text-slate-500 max-w-xl leading-relaxed">
                       {HEADER_CONTENT.description}
@@ -120,7 +124,7 @@ export default function Header() {
                   </div>
 
                   {/* Right Side: Install Quick box */}
-                  <div className="w-full md:w-auto md:min-w-[420px] flex flex-col items-stretch gap-2">
+                  <div className="hidden md:w-auto md:min-w-[420px] md:flex md:flex-col md:items-stretch md:gap-2">
                     <div className="bg-slate-50 rounded-xl p-4 border border-slate-200 relative">
                       <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-200/60">
                         <div className="flex items-center gap-1.5 text-xs text-slate-500 font-mono">

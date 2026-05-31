@@ -30,6 +30,7 @@ export const HEADER_DEFAULT_ACTION = {
 export const HEADER_CONTENT = {
   releaseTag: 'v1.0.1 Release',
   zeroDepsTag: 'Zero Dependencies CLI',
+  secureTag: 'Secure',
   packageName: '@gks101/port-kill',
   description:
     'Highly maintainable, lightweight cross-platform port termination library and executable package.',
