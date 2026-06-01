@@ -5,30 +5,7 @@
 
 import { COMMAND_ARGUMENTS, COMMAND_BINARIES, COMMAND_FLAGS } from './constants';
 import { PlatformCommand } from './runner';
-
-const ALLOWED_POSIX_SIGNALS = new Set([
-  'SIGHUP',
-  'SIGINT',
-  'SIGQUIT',
-  'SIGILL',
-  'SIGTRAP',
-  'SIGABRT',
-  'SIGBUS',
-  'SIGFPE',
-  'SIGKILL',
-  'SIGUSR1',
-  'SIGSEGV',
-  'SIGUSR2',
-  'SIGPIPE',
-  'SIGALRM',
-  'SIGTERM',
-  'SIGCHLD',
-  'SIGCONT',
-  'SIGSTOP',
-  'SIGTSTP',
-  'SIGTTIN',
-  'SIGTTOU',
-] as const);
+import { POSIX_SIGNAL_SET } from '../shared/constants';
 
 export interface PlatformCommandFactory {
   createFindCommands(port: number): PlatformCommand[];
@@ -71,7 +48,7 @@ function normalizeUnixSignal(signal: string): string {
     normalizedSignal = `${COMMAND_ARGUMENTS.POSIX_SIGNAL_PREFIX}${normalizedSignal}`;
   }
 
-  if (!ALLOWED_POSIX_SIGNALS.has(normalizedSignal as any)) {
+  if (!POSIX_SIGNAL_SET.has(normalizedSignal)) {
     throw new Error(`Unsupported or invalid POSIX signal: "${signal}".`);
   }
 

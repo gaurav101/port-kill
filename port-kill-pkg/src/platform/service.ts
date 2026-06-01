@@ -4,13 +4,11 @@
  */
 
 import { PortKillOptions, PortKillResult } from '../types';
+import { PORT_RANGE } from '../shared/constants';
 import { createLogger } from '../shared/logger';
 import { PlatformStrategyFactory } from './factory';
 import { createDryRunResult, createFreePortResult, createTerminationResult } from './results';
 import { PLATFORM_MESSAGES, PLATFORM_RUNTIME } from './constants';
-
-const PORT_MIN = 1;
-const PORT_MAX = 65535;
 
 function getFallbackSignal(options: PortKillOptions): string {
   return options.force !== false ? PLATFORM_RUNTIME.FORCE_SIGNAL : PLATFORM_RUNTIME.GRACEFUL_SIGNAL;
@@ -22,9 +20,9 @@ function getFallbackSignal(options: PortKillOptions): string {
 export function killSinglePort(port: number, options: PortKillOptions = {}): PortKillResult {
   const timestamp = new Date().toISOString();
 
-  if (!Number.isInteger(port) || port < PORT_MIN || port > PORT_MAX) {
+  if (!Number.isInteger(port) || port < PORT_RANGE.MIN || port > PORT_RANGE.MAX) {
     throw new Error(
-      `Invalid port number: ${String(port)}. Port must be an integer between ${PORT_MIN} and ${PORT_MAX}.`
+      `Invalid port number: ${String(port)}. Port must be an integer between ${PORT_RANGE.MIN} and ${PORT_RANGE.MAX}.`
     );
   }
 

@@ -4,34 +4,9 @@
  */
 
 import { PortKillOptions } from '../types';
+import { PORT_RANGE, POSIX_SIGNAL_SET } from '../shared/constants';
 import { CLI_ERRORS } from './messages';
 import { CLI_DEFAULT_OPTIONS, CLI_FLAGS, CLI_PARSE_TYPES } from './constants';
-
-const PORT_MIN = 1;
-const PORT_MAX = 65535;
-const ALLOWED_SIGNALS = new Set([
-  'SIGHUP',
-  'SIGINT',
-  'SIGQUIT',
-  'SIGILL',
-  'SIGTRAP',
-  'SIGABRT',
-  'SIGBUS',
-  'SIGFPE',
-  'SIGKILL',
-  'SIGUSR1',
-  'SIGSEGV',
-  'SIGUSR2',
-  'SIGPIPE',
-  'SIGALRM',
-  'SIGTERM',
-  'SIGCHLD',
-  'SIGCONT',
-  'SIGSTOP',
-  'SIGTSTP',
-  'SIGTTIN',
-  'SIGTTOU',
-]);
 
 export type CliParseResult =
   | { type: typeof CLI_PARSE_TYPES.HELP }
@@ -73,7 +48,7 @@ export function parseCliArgs(args: string[]): CliParseResult {
         const normalizedSignal = nextArg.toUpperCase().startsWith('SIG')
           ? nextArg.toUpperCase()
           : `SIG${nextArg.toUpperCase()}`;
-        if (!ALLOWED_SIGNALS.has(normalizedSignal)) {
+        if (!POSIX_SIGNAL_SET.has(normalizedSignal)) {
           return { type: CLI_PARSE_TYPES.ERROR, message: CLI_ERRORS.INVALID_SIGNAL };
         }
         options.signal = normalizedSignal;
@@ -86,7 +61,7 @@ export function parseCliArgs(args: string[]): CliParseResult {
         return { type: CLI_PARSE_TYPES.ERROR, message: CLI_ERRORS.invalidPortOrOption(arg) };
       }
       const port = Number(arg);
-      if (port < PORT_MIN || port > PORT_MAX) {
+      if (port < PORT_RANGE.MIN || port > PORT_RANGE.MAX) {
         return { type: CLI_PARSE_TYPES.ERROR, message: CLI_ERRORS.invalidPortOrOption(arg) };
       }
       ports.push(port);
