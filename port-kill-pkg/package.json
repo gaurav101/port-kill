@@ -1,6 +1,6 @@
 {
   "name": "@gks101/port-kill",
-  "version": "0.0.1",
+  "version": "0.0.2-beta.0",
   "description": "Highly maintainable, lightweight, cross-platform programmatic API and zero-dependency CLI tool to terminate processes running on specific ports.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -44,7 +44,7 @@
     "ci-cd",
     "test-cleanup"
   ],
-  "author": "Gaurav Singh <gaurav.kr.singh1@gmail.com>",
+  "author": "Gaurav Singh - github.com/gaurav101",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -54,7 +54,7 @@
   "bugs": {
     "url": "https://github.com/gaurav101/port-kill/issues"
   },
-  "homepage": "https://github.com/gaurav101/port-kill/tree/main/port-kill-pkg#readme",
+  "homepage": "https://port-kill.vercel.app",
   "publishConfig": {
     "access": "public",
     "tag": "beta"
