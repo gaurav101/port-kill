@@ -1,6 +1,6 @@
 # @gks101/port-kill
 
-[![npm version](https://img.shields.io/badge/npm-v1.0.2-blue.svg)](https://www.npmjs.com/package/@gks101/port-kill)
+[![npm version](https://img.shields.io/npm/v/@gks101/port-kill)](https://www.npmjs.com/package/@gks101/port-kill)
 [![node](https://img.shields.io/badge/node-%3E%3D16-339933.svg)](https://nodejs.org/)
 [![license](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -50,6 +50,19 @@ Run without install:
 
 ```bash
 npx @gks101/port-kill 3000
+```
+
+## Beta Publishing Workflow
+
+```bash
+# verify publish payload
+npm run pack:dry-run
+
+# bump to next prerelease version (e.g., 0.0.2-beta.0 -> 0.0.2-beta.1)
+npm run version:beta
+
+# publish prerelease under the beta dist-tag
+npm run publish:beta
 ```
 
 ## CLI

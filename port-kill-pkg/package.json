@@ -4,14 +4,33 @@
   "description": "Highly maintainable, lightweight, cross-platform programmatic API and zero-dependency CLI tool to terminate processes running on specific ports.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "bin": {
     "port-kill": "dist/cli/index.js"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
   "scripts": {
     "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
     "build": "npm run clean && tsc",
     "test": "jest --coverage",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "prepack": "npm run build",
+    "prepublishOnly": "npm test",
+    "pack:dry-run": "npm pack --dry-run --cache ./.npm-cache",
+    "version:beta": "npm version prerelease --preid=beta",
+    "publish:beta": "npm publish --tag beta --access public"
   },
   "keywords": [
     "port-kill",
@@ -27,8 +46,18 @@
   ],
   "author": "Gaurav Singh <gaurav.kr.singh1@gmail.com>",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gaurav101/port-kill.git",
+    "directory": "port-kill-pkg"
+  },
+  "bugs": {
+    "url": "https://github.com/gaurav101/port-kill/issues"
+  },
+  "homepage": "https://github.com/gaurav101/port-kill/tree/main/port-kill-pkg#readme",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "tag": "beta"
   },
   "engines": {
     "node": ">=16.0.0"
