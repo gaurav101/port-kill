@@ -1,6 +1,6 @@
 {
   "name": "@gks101/port-kill",
-  "version": "0.0.2-beta.0",
+  "version": "1.0.0",
   "description": "Highly maintainable, lightweight, cross-platform programmatic API and zero-dependency CLI tool to terminate processes running on specific ports.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
