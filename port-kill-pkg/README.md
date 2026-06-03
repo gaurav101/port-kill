@@ -52,19 +52,6 @@ Run without install:
 npx @gks101/port-kill 3000
 ```
 
-## Beta Publishing Workflow
-
-```bash
-# verify publish payload
-npm run pack:dry-run
-
-# bump to next prerelease version (e.g., 0.0.2-beta.0 -> 0.0.2-beta.1)
-npm run version:beta
-
-# publish prerelease under the beta dist-tag
-npm run publish:beta
-```
-
 ## CLI
 
 ```bash

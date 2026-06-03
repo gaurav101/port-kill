@@ -1,6 +1,6 @@
 {
   "name": "@gks101/port-kill",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Highly maintainable, lightweight, cross-platform programmatic API and zero-dependency CLI tool to terminate processes running on specific ports.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -63,7 +63,7 @@
   "homepage": "https://port-kill.vercel.app",
   "publishConfig": {
     "access": "public",
-    "tag": "beta"
+    "tag": "latest"
   },
   "engines": {
     "node": ">=16.0.0"
